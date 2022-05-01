@@ -1,9 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Home from './components/Home/home'
-import About from './components/About/about';
-import Login from './components/Login/login';
-import Register from './components/Register/register';
+import Home from './src/components/Home/home'
+import About from './src/components/About/about';
+import Login from './src/components/Login/login';
+import Register from './src/components/Register/register';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
