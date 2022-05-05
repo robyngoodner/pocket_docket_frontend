@@ -12,4 +12,6 @@ const client = axios.create({
 	},
 });
 
+//https://blog.logrocket.com/using-axios-react-native-manage-api-requests/
+
 export default client;
