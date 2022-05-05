@@ -1,8 +1,9 @@
-import axios from 'axios';
+import { axios } from 'react-native-axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
-const backendAPI = "http://localhost:4000/api";
+const backendAPI = "http://localhost:3000/api";
 
-let user = JSON.parse(localStorage.getItem("user"))
+let user = JSON.parse(AsyncStorage.getItem("user"))
 
 const client = axios.create({
 	baseURL: `${backendAPI}`,

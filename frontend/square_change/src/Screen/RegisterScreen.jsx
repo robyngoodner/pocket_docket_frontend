@@ -6,22 +6,22 @@ import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button } from
 
 export default function Register ({ navigation }) {
 
-    return (
-        <>
-            <View style={styles.container}>
-                <Image
-                    source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
-                        style={{width: 400, height: 200}}
-                />
-                <Text>Register standin</Text>
-                <Image style={styles.block3}
-                source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
-            />
-            <Text style={styles.text}>Making a difference</Text>
-            </View>
-            <StatusBar style="auto" />
-      </>
-    )
+    // return (
+    //     <>
+    //         <View style={styles.container}>
+    //             <Image
+    //                 source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
+    //                     style={{width: 400, height: 200}}
+    //             />
+    //             <Text>Register standin</Text>
+    //             <Image style={styles.block3}
+    //             source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
+    //         />
+    //         <Text style={styles.text}>Making a difference</Text>
+    //         </View>
+    //         <StatusBar style="auto" />
+    //   </>
+    // )
 }
 
 const styles = StyleSheet.create({

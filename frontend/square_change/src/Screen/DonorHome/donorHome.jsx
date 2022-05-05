@@ -4,22 +4,38 @@ import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button } from
 // import { navigation } from '@react-navigation/native';
  
 
-export default function Login ({ navigation }) {
+export default function Home ({ navigation }) {
 
+  const unhideLogin = () => {
+    styles.hidden.display = 'flex';
+    styles.login.display = 'none';
+  }
     return (
         <>
             <View style={styles.container}>
-                <Image
-                    source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
-                        style={{width: 400, height: 200}}
-                />
-                <Text>Login standin</Text>
+            <Image
+                source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
+                    style={{width: 400, height: 200}}
+            />
+            <View style={styles.home}>
+                <View style={styles.overlap}>
+                <Text>sQuaRe change</Text>
+                <Text>OMG YOU LOGGED IN</Text>
+                <Button
+                  title="About"
+                  onPress={() => { 
+                    navigation.navigate('About')}} />
+                </View>
+                <View style={styles.horizontal}>
+                  
+                  </View>
                 <Image style={styles.block3}
                 source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
             />
             <Text style={styles.text}>Making a difference</Text>
             </View>
             <StatusBar style="auto" />
+        </View>
       </>
     )
 }
@@ -69,6 +85,7 @@ const styles = StyleSheet.create({
     login : {
       display: 'flex',
       justifyContent: 'center',
+      backgroundColor: '#E7EBEF'
     },
 
     hidden: {
@@ -79,6 +96,12 @@ const styles = StyleSheet.create({
       padding: 2,
       margin: 2,
       backgroundColor: '#E7EBEF',
+    },
+
+    horizontal: {
+      display: 'flex',
+      flexDirection: 'row',
+      paddingLeft: 180,
     }
   });
   
