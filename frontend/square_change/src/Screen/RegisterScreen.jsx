@@ -78,12 +78,12 @@ const RegisterScreen = (props) => {
       type_user: userType,
     };
 
-    console.log(userData)
+    // console.log(userData)
     authService.register(userData)
     .then((res) => {
       //hide loader
       setLoading(false);
-      console.log("Register screen line 86",res.status);
+      // console.log("Register screen line 86",res.status);
       // If server response message same as data
       if (res.status == '201') {
         setIsRegistrationSuccess(true);

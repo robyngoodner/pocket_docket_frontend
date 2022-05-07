@@ -37,7 +37,7 @@ export default function Login ({ navigation }) {
       // If server response message same as data
       if (res.status == '201') {
         // console.log("login screen line 48",res.config.data.email)
-        AsyncStorage.setItem('user_id', res.config.data.email);
+        //AsyncStorage.setItem('user_id', res.config.data.email);
         AsyncStorage.setItem('token', res.data.token);
         // console.log(res.config.data.email);
         navigation.replace('DrawerNavigationRoutes');
