@@ -10,7 +10,7 @@ import {
   Image
 } from 'react-native';
  
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 const SplashScreen = ({navigation}) => {
   //State for ActivityIndicator animation
@@ -32,10 +32,10 @@ const SplashScreen = ({navigation}) => {
  
   return (
     <View style={styles.container}>
-      <Image
+      {/* <Image
         source={require('../Image/aboutreact.png')}
         style={{width: '90%', resizeMode: 'contain', margin: 30}}
-      />
+      /> */}
       <ActivityIndicator
         animating={animating}
         color="#FFFFFF"

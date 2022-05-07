@@ -1,15 +1,10 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button } from 'react-native';
-// import { navigation } from '@react-navigation/native';
+import { navigation } from '@react-navigation/native';
  
 
-export default function Home ({ navigation }) {
-
-  const unhideLogin = () => {
-    styles.hidden.display = 'flex';
-    styles.login.display = 'none';
-  }
+export default function DonorHome ({ navigation }) {
     return (
         <>
             <View style={styles.container}>

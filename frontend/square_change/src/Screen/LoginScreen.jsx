@@ -1,11 +1,12 @@
 import React, {useState, createRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, TextInput, ScrollView,Keyboard, KeyboardAvoidingView } from 'react-native';
-// import { navigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-community/async-storage';
+import { navigation } from '@react-navigation/native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from './Components/Loader';
 import axios from 'axios';
-import * as authService from '../../../api/auth.service'
+import * as authService from '../api/auth.service'
 
 export default function Login ({ navigation }) {
   const [userEmail, setUserEmail] = useState('');
@@ -15,7 +16,7 @@ export default function Login ({ navigation }) {
 
   const passwordInputRef = createRef();
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setErrortext('');
     if(!userEmail) {
@@ -28,28 +29,22 @@ export default function Login ({ navigation }) {
     }
     setLoading(true);
     let userData = {email: userEmail, password: userPassword };
-    let formBody=[];
-    for (let key in userData) {
-      let encodedKey = encodeURIComponent(key);
-      let encodedValue = encodeURIComponent(userData[key]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
-  }
 
-  await authService.login(email, password)
-    .then((res) => res.json())
-    .then((responseJson) => {
+    authService.login(userData)
+    .then((res) => {
+      //hide loader
       setLoading(false);
-      console.log(responseJson);
-      // If server response message same as Data Matched
-      if (responseJson.status === 'success') {
-        AsyncStorage.setItem('user_id', responseJson.data.email);
-        console.log(responseJson.data.email);
+      // If server response message same as data
+      if (res.status == '201') {
+        // console.log("login screen line 48",res.config.data.email)
+        AsyncStorage.setItem('user_id', res.config.data.email);
+        AsyncStorage.setItem('token', res.data.token);
+        // console.log(res.config.data.email);
         navigation.replace('DrawerNavigationRoutes');
       } else {
-        setErrortext(responseJson.msg);
+        setErrortext(res.msg);
         console.log('Please check your email id or password');
+        console.log(res)
       }
       })
       .catch((error) => {
@@ -57,102 +52,95 @@ export default function Login ({ navigation }) {
       setLoading(false);
       console.error(error);
       });
+    }
     
-
-  // return (
-  //       <>
-  //           <View style={styles.container}>
-  //               <Image
-  //                   source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
-  //                       style={{width: 400, height: 200}}
-  //               />
-  //               <Text>Login standin</Text>
-  //               <Image style={styles.block3}
-  //               source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
-  //           />
-  //           <Text style={styles.text}>Making a difference</Text>
-  //           </View>
-  //           <StatusBar style="auto" />
-  //     </>
-  //   )
   return (
-    <View style={styles.mainBody}>
-      <Loader loading={loading} />
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}>
-        <View>
-          <KeyboardAvoidingView enabled>
-            <View style={{alignItems: 'center'}}>
-              <Image
-                source={require('../Image/aboutreact.png')}
-                style={{
-                  width: '50%',
-                  height: 100,
-                  resizeMode: 'contain',
-                  margin: 30,
-                }}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserEmail) =>
-                  setUserEmail(UserEmail)
-                }
-                placeholder="Enter Email" //dummy@abc.com
-                placeholderTextColor="#8b9cb5"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  passwordInputRef.current &&
-                  passwordInputRef.current.focus()
-                }
-                underlineColorAndroid="#f000"
-                blurOnSubmit={false}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserPassword) =>
-                  setUserPassword(UserPassword)
-                }
-                placeholder="Enter Password" //12345
-                placeholderTextColor="#8b9cb5"
-                keyboardType="default"
-                ref={passwordInputRef}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={true}
-                underlineColorAndroid="#f000"
-                returnKeyType="next"
-              />
-            </View>
-            {errortext != '' ? (
-              <Text style={styles.errorTextStyle}>
-                {errortext}
-              </Text>
-            ) : null}
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>LOGIN</Text>
-            </TouchableOpacity>
-            <Text
-              style={styles.registerTextStyle}
-              onPress={() => navigation.navigate('RegisterScreen')}>
-              New Here ? Register
-            </Text>
-          </KeyboardAvoidingView>
-        </View>
-      </ScrollView>
+    <View style={styles.container}>
+      <Image
+        source={require('../assets/imgs/shutterstock_739769911.jpg')} 
+            style={{width: 400, height: 200}}
+      />
+      <View style={styles.overlap}>
+        <Text>sQuaRe change</Text>
+        <Text>No cash? No problem. Using microtransactions to make a difference.</Text>
+        <Button
+          title="About"
+          onPress={() => { 
+            navigation.navigate('About')}} />
+      </View>
+      <View style={styles.mainBody}>
+        <Loader loading={loading} />
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            alignContent: 'center',
+          }}>
+          <View style={styles.login}>
+            <KeyboardAvoidingView enabled>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(UserEmail) =>
+                    setUserEmail(UserEmail)
+                  }
+                  placeholder="Enter Email" //dummy@abc.com
+                  placeholderTextColor="#8b9cb5"
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                  onSubmitEditing={() =>
+                    passwordInputRef.current &&
+                    passwordInputRef.current.focus()
+                  }
+                  underlineColorAndroid="#f000"
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(UserPassword) =>
+                    setUserPassword(UserPassword)
+                  }
+                  placeholder="Enter Password" //12345
+                  placeholderTextColor="#8b9cb5"
+                  keyboardType="default"
+                  ref={passwordInputRef}
+                  onSubmitEditing={Keyboard.dismiss}
+                  blurOnSubmit={false}
+                  secureTextEntry={true}
+                  underlineColorAndroid="#f000"
+                  returnKeyType="next"
+                />
+              </View>
+              {errortext != '' ? (
+                <Text style={styles.errorTextStyle}>
+                  {errortext}
+                </Text>
+              ) : null}
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={handleSubmit}>
+                <Text style={styles.buttonTextStyle}>LOGIN</Text>
+              </TouchableOpacity>
+              <View style={styles.registerText}>
+                <Text
+                  style={styles.registerTextStyle}
+                  onPress={() => navigation.navigate('RegisterScreen')}>
+                  New Here ? Register
+                </Text>
+              </View>
+            </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
+        <Image style={styles.block3}
+          source={require('../assets/imgs/shutterstock_1145004488.jpg')} 
+        />
+        <Text style={styles.text}>Making a difference</Text>
+      </View>
     </View>
   );
 };
@@ -162,21 +150,22 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#307ecc',
+    backgroundColor: '#5B5A60',
     alignContent: 'center',
+    paddingTop: 48,
   },
   SectionStyle: {
     flexDirection: 'row',
-    height: 40,
+    height: 30,
     marginTop: 20,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
   },
   buttonStyle: {
-    backgroundColor: '#7DE24E',
+    backgroundColor: '#E7EBEF',
     borderWidth: 0,
-    color: '#FFFFFF',
+    color: '#5B5A60',
     borderColor: '#7DE24E',
     height: 40,
     alignItems: 'center',
@@ -187,7 +176,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   buttonTextStyle: {
-    color: '#FFFFFF',
+    color: '#5B5A60',
     paddingVertical: 10,
     fontSize: 16,
   },
@@ -208,10 +197,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 10,
   },
+   registerText: {
+     position: 'relative',
+     top: -20
+    },
   errorTextStyle: {
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
+  },
+  login: {
+    paddingTop: 20,
   },
     container: {
       flex: 1,
@@ -227,8 +223,8 @@ const styles = StyleSheet.create({
     },
   
     overlap: {
-      position:'relative',
-      bottom: 40,
+      position:'absolute',
+      bottom: 445,
       left: 4,
       backgroundColor: '#E7EBEF',
       /* border: 2px solid #5B5A60,
@@ -243,30 +239,16 @@ const styles = StyleSheet.create({
   
     block3: {
       position: 'relative',
-      bottom: -160,
+      bottom: -50,
       width: 400, 
       height: 200
     },
   
     text: {
       position: 'relative',
-      top: 100,
+      top: -50,
       paddingLeft: 20,
     },
 
-    login : {
-      display: 'flex',
-      justifyContent: 'center',
-    },
-
-    hidden: {
-      display: 'none',
-      /* padding-top: 10vh; */
-      /* margin-bottom: 10vh */
-      marginBottom: -15,
-      padding: 2,
-      margin: 2,
-      backgroundColor: '#E7EBEF',
-    }
   });
   

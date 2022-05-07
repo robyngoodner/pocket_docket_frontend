@@ -42,21 +42,57 @@
 import 'react-native-gesture-handler';
  
 // Import React and Component
-import React from 'react';
+import React, {useEffect, useCallback, useContext, useState} from 'react';
+import {AuthContext, AuthProvider} from './src/api/AuthContext';
+import { AxiosProvider } from './src/api/AxiosContext';
+import * as Keychain from 'react-native-keychain';
  
 // Import Navigators from React Navigation
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
  
 // Import Screens
-import SplashScreen from './Screen/SplashScreen';
-import LoginScreen from './Screen/LoginScreen';
-import RegisterScreen from './Screen/RegisterScreen';
-import DrawerNavigationRoutes from './Screen/DrawerNavigationRoutes';
+import SplashScreen from './src/Screen/SplashScreen';
+import LoginScreen from './src/Screen/LoginScreen';
+import RegisterScreen from './src/Screen/RegisterScreen';
+import DrawerNavigationRoutes from './src/Screen/DrawerNavigationRoutes';
+import DonorHome from './src/Screen/DonorHome/donorHome'
  
 const Stack = createStackNavigator();
  
 const Auth = () => {
+  const authContext = useContext(AuthContext);
+  const [status, setStatus] = useState('loading');
+
+  const loadJWT = useCallback(async () => {
+    try {
+      const value = await Keychain.getGenericPassword();
+      const jwt = JSON.parse(value.password);
+
+      authContext.setAuthState({
+        accessToken: jwt.accessToken || null,
+        refreshToken: jwt.refreshToken || null,
+        authenticated: jwt.accessToken !== null,
+      });
+      setStatus('success');
+    } catch (error) {
+      setStatus('error');
+      console.log(`Keychain Error: ${error.message}`);
+      authContext.setAuthState({
+        accessToken: null,
+        refreshToken: null,
+        authenticated: false,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    loadJWT();
+  }, [loadJWT]);
+
+
+  if (authContext?.authState?.authenticated === false) {
+
   // Stack Navigator for Login and Sign up Screen
   return (
     <Stack.Navigator initialRouteName="LoginScreen">
@@ -81,10 +117,16 @@ const Auth = () => {
       />
     </Stack.Navigator>
   );
+      } else {
+        return <DonorHome />
+      }
 };
  
 const App = () => {
+
   return (
+    <AuthProvider>
+            <AxiosProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashScreen">
         {/* SplashScreen which will come once for 5 Seconds */}
@@ -95,6 +137,7 @@ const App = () => {
           options={{headerShown: false}}
         />
         {/* Auth Navigator: Include Login and Signup */}
+        
         <Stack.Screen
           name="Auth"
           component={Auth}
@@ -109,6 +152,8 @@ const App = () => {
         />
       </Stack.Navigator>
     </NavigationContainer>
+            </AxiosProvider>
+        </AuthProvider>
   );
 };
  

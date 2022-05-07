@@ -1,50 +1,40 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button } from 'react-native';
-// import { navigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView } from 'react-native';
+import { navigation } from '@react-navigation/native';
  
 
-export default function Home ({ navigation }) {
+export default function HomeScreen ({ navigation }) {
+  const [userName, setUserName] = useState('');
+  const [userStatus, setUserStatus] = useState('')
 
-  const unhideLogin = () => {
-    styles.hidden.display = 'flex';
-    styles.login.display = 'none';
-  }
-    return (
-        <>
-            <View style={styles.container}>
-            <Image
-                source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
-                    style={{width: 400, height: 200}}
-            />
-            <View style={styles.home}>
-                <View style={styles.overlap}>
-                <Text>sQuaRe change</Text>
-                <Text>No cash? No problem. Using microtransactions to make a difference.</Text>
-                <Button
-                  title="About"
-                  onPress={() => { 
-                    navigation.navigate('About')}} />
-                </View>
-                <View style={styles.horizontal}>
-                  <Button
-                    title="Login"
-                    onPress={() => { 
-                      navigation.navigate('Login')}} />
-                  <Button
-                    title="Register"
-                    onPress={() => { 
-                      navigation.navigate('Register')}} />
-                  </View>
-                <Image style={styles.block3}
-                source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
-            />
-            <Text style={styles.text}>Making a difference</Text>
-            </View>
-            <StatusBar style="auto" />
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      {/* <View style={{flex: 1, padding: 16}}> */}
+        <View style={styles.container}>
+          <Image
+          source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
+            style={{width: 400, height: 180}}
+        />
+        <View style={styles.home}>
+          <View style={styles.overlap}>
+            <Text>sQuaRe change</Text>
+            <Text>No cash? No problem. Using microtransactions to make a difference.</Text>
+            <Button
+              title="About"
+              onPress={() => { 
+                navigation.navigate('About')}} />
+          </View>
+          <Image style={styles.block3}
+            source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
+          />
+          <Text style={styles.text}>Making a difference</Text>
         </View>
-      </>
-    )
+        <StatusBar style="auto" />
+      </View>
+    {/* </View> */}
+  </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({

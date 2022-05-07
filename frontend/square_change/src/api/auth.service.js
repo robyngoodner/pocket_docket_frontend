@@ -1,24 +1,28 @@
 import client from './axios.config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const auth = '/auth';
 const users = '/users';
 
-const register = (firstName, lastName, email, password, type_user) => {
+const register = (user) => {
+    console.log('auth.service front end user registration',user)
     return client
-    .post(`${auth}/register`, {firstName, lastName, email, password, type_user})
-    .then((res) => {console.log(res)})
+    .post(`${auth}/register`, user)
+    .then((res) => {
+        console.log("front end auth.service line 12 res.status",res.status)
+        return res;
+    })
 }
 
-const login = (email, password) => {
+const login = (user) => {
     try {
         return client
-        .post(`${auth}/login`, {email,password})
+        .post(`${auth}/login`, user)
         .then((res) => {
             if(res.data.token) {
-                console.log(res.data.message)
-                localStorage.setItem("user", JSON.stringify(res.data.token))
+                AsyncStorage.setItem("token", JSON.stringify(res.data.token))
             }
-            return res.data.token;
+            return res;
         })
     }catch(err){
         console.log(err)
