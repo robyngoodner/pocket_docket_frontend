@@ -38,30 +38,24 @@ const currentUser = () => {
     return JSON.parse(user)
 }
 
- const getProfile = async () => {
-    await AsyncStorage.getItem('user')  
-    .then((user) => {
-        user=JSON.parse(user)
-        // console.log("auth service front end line 44 ",user)
-        // if (user !== null) {
-            // console.log("front end auth service line 41 ", user)
-        client.get(`${auth}${users}/${user}`, user)
-        .then((res) =>{
-            console.log("res.data: ",res.data)
-            return res.data
-        })          
-        // }
-    })
-    .catch (err =>{
-        console.log("front end auth service error line 52: ",err)
-        return err
-    })
+
+
+ async function getProfile (user, data) {
+    //console.log("user ", user)    
+    user=JSON.parse(user)
+    return client.get(`${auth}${users}/${user}`, data)
+    }
     
+async function deleteProfile (user) {
+    user = JSON.parse(user);
+    AsyncStorage.removeItem("user");
+    await client.delete(`${auth}${users}/${user}/delete`);
+    // redirect (`/`)
+}
     
- }
 
 const logout = () => {
     AsyncStorage.removeItem("user")
 }
 
-export {register, login, currentUser, getProfile, logout}
+export {register, login, currentUser, getProfile, logout, deleteProfile}

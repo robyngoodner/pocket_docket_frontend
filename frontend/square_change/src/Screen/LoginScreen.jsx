@@ -39,10 +39,10 @@ export default function Login ({ navigation }) {
         // console.log("login screen line 48",res.config.data.email)
         //AsyncStorage.setItem('user_id', res.config.data.email);
         AsyncStorage.setItem('token', res.data.token);
-        // console.log(res.config.data.email);
+        console.log(res.config.data);
         navigation.replace('DrawerNavigationRoutes');
       } else {
-        setErrortext(res.msg);
+        setErrortext('Please check your email id or password');
         console.log('Please check your email id or password');
         console.log(res)
       }
@@ -50,6 +50,7 @@ export default function Login ({ navigation }) {
       .catch((error) => {
       //Hide Loader
       setLoading(false);
+      setErrortext('Please check your email id or password');
       console.error(error);
       });
     }

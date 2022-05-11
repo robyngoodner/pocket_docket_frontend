@@ -1,6 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert } from 'react-native';
 import { navigation } from '@react-navigation/native';
 import * as authservice from '../../api/auth.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,21 +14,38 @@ export default function HomeScreen ({ navigation }) {
   const [donationOptionTwo, setDonationOptionTwo] = useState('');
   const [donationOptionThree, setDonationOptionThree] = useState('');
 
-  const getUserProfile = async () => {
-    await authservice.getProfile()
-    .then((res) => {
-      console.log("HomeScreen line 19 response ",res)
-      //setUserName = res.firstName;
-      // setUserStatus = res.data.type_user
+
+  async function getUserProfile() {
+    const user = await AsyncStorage.getItem('user')
+    .then(user => authservice.getProfile(user)) 
+    .then(res => {
+      //console.log("getUserProfile2 res ",res.data)
+      setUserProfile(res.data)
     })
-    .catch(err => {
-      console.log(err)
-    })
+  }
+
+  async function deleteProfile() {
+    const user = await AsyncStorage.getItem('user')
+    .then(user => authservice.deleteProfile(user)) 
+    .then(navigation.navigate('SplashScreen'))
+    .then(navigation.navigate('DrawerNavigationRoutes'))
+  }
+  
+  const deleteAlert = () => {
+      Alert.alert('Delete Profile', 'Are you sure you want to delete your profile?', [
+        {text: 'Cancel', onPress: () => console.log('Canceled'),
+        style: 'cancel', 
+        },
+        {text: 'Delete', onPress: () => {
+          deleteProfile()
+          alert('Deleting your profile. This may take a second.')}}
+      ])
+      
   }
   
   useEffect (() => {
   getUserProfile();
-  }, [getUserProfile]);
+  }, []);
   
   
   return (
@@ -48,11 +65,14 @@ export default function HomeScreen ({ navigation }) {
               onPress={() => { 
                 navigation.navigate('About')}} />
           </View>
+          <Button
+              title="Delete profile"
+              onPress={deleteAlert} />
           <Image style={styles.block3}
             source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
           />
-          <Text>Welcome, {userName}.</Text>
-          <Text>{userStatus}</Text>
+          <Text>Welcome, {userProfile.firstName}.</Text>
+          <Text>{userProfile.type_user}</Text>
           <Text style={styles.text}>Making a difference</Text>
         </View>
         <StatusBar style="auto" />

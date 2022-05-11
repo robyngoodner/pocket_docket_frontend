@@ -1,7 +1,8 @@
 import client from './axios.config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const users = '/users';
-const donors = '/donors';
+const donors = '/donor';
 
 const getDonor = (user) => {
     try {
