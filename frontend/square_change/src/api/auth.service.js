@@ -25,6 +25,7 @@ const login = (user) => {
             if(res.data.token) {
                 AsyncStorage.setItem("token", JSON.stringify(res.data.token))
                 AsyncStorage.setItem("user", JSON.stringify(user.email))
+                AsyncStorage.setItem("userId", JSON.stringify(user.id))
             }
             return res;
         })

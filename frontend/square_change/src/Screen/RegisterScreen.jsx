@@ -8,31 +8,11 @@ import * as authService from '../api/auth.service'
 import AsyncStorage from '@react-native-async-storage/async-storage';
  
 
-// export default function Register ({ navigation }) {
-
-    // return (
-    //     <>
-    //         <View style={styles.container}>
-    //             <Image
-    //                 source={require('../assets/imgs/shutterstock_739769911.jpg')} 
-    //                     style={{width: 400, height: 200}}
-    //             />
-    //             <Text>Register standin</Text>
-    //             <Image style={styles.block3}
-    //             source={require('../assets/imgs/shutterstock_1145004488.jpg')} 
-    //         />
-    //         <Text style={styles.text}>Making a difference</Text>
-    //         </View>
-    //         <StatusBar style="auto" />
-    //   </>
- //}
-
 const RegisterScreen = (props) => {
   const [userEmail, setUserEmail] = useState('');
   const [userFirstName, setUserFirstName] = useState('');
   const [userLastName, setUserLastName] = useState('');
   const [userPassword, setUserPassword] = useState('');
-  const [userType, setUserType] = useState('');
   const [loading, setLoading] = useState('');
   const [errortext, setErrortext] = useState('');
   const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
@@ -42,7 +22,6 @@ const RegisterScreen = (props) => {
   const passwordInputRef = createRef();
   const userTypeInputRef = createRef();
 
-  const userTypes = ["Donor", "Recipient"]
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -63,10 +42,7 @@ const RegisterScreen = (props) => {
       alert('Please enter a password.');
       return;
     }
-    if(!userType) {
-      alert('Please select a type of user.');
-      return;
-    }
+ 
 
     //show loader
     setLoading(true);
@@ -75,7 +51,6 @@ const RegisterScreen = (props) => {
       lastName: userLastName,
       email: userEmail,
       password: userPassword,
-      type_user: userType,
     };
 
     // console.log(userData)
@@ -214,7 +189,7 @@ const RegisterScreen = (props) => {
               blurOnSubmit={false}
             />
           </View>
-          <View style={styles.SectionStyle}>
+          {/* <View style={styles.SectionStyle}>
             <SelectDropDown
               style={styles.inputStyle}
               data={userTypes}
@@ -232,7 +207,7 @@ const RegisterScreen = (props) => {
               
               blurOnSubmit={false}
             />
-          </View>
+          </View> */}
           {errortext != '' ? (
             <Text style={styles.errorTextStyle}>
               {errortext}

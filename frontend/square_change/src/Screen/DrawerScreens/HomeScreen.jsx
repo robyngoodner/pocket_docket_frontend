@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert } from 'react-native';
 import { navigation } from '@react-navigation/native';
 import * as authservice from '../../api/auth.service';
+import * as listService from '../../api/list.service'
 import AsyncStorage from '@react-native-async-storage/async-storage';
  
 
@@ -10,9 +11,8 @@ export default function HomeScreen ({ navigation }) {
   const [userName, setUserName] = useState('');
   const [userStatus, setUserStatus] = useState('');
   const [userProfile, setUserProfile] = useState({})
-  const [donationOptionOne, setDonationOptionOne] = useState('');
-  const [donationOptionTwo, setDonationOptionTwo] = useState('');
-  const [donationOptionThree, setDonationOptionThree] = useState('');
+  const [lists, setLists] = useState([]);
+  const [item, setItem] = useState('');
 
 
   async function getUserProfile() {
@@ -42,11 +42,32 @@ export default function HomeScreen ({ navigation }) {
       ])
       
   }
+
+  async function getLists() {
+    const user = await AsyncStorage.getItem('user')
+    .then(user => listService.getLists(user)) 
+    .then(res => {
+      console.log("Lists res ",res.data)
+      setLists(res.data)
+      console.log("lists after setting: ", lists)
+
+    })
+  }
   
   useEffect (() => {
   getUserProfile();
+  getLists();
   }, []);
   
+  const list = () => {
+    return lists.map((element, key) => {
+      return (
+        <View key={element.key}>
+          <Text>{element.title}: {element.description}</Text>
+        </View>
+      )
+    })
+  }
   
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -65,6 +86,12 @@ export default function HomeScreen ({ navigation }) {
               onPress={() => { 
                 navigation.navigate('About')}} />
           </View>
+          <Text>To Do Lists: </Text>
+          <View>{list()}</View>
+          <Button
+              title="NewList"
+              onPress={() => { 
+                navigation.navigate('NewListScreenStack')}} />
           <Button
               title="Delete profile"
               onPress={deleteAlert} />
