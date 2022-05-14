@@ -5,6 +5,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import HomeScreen from './DrawerScreens/HomeScreen';
 import NewListScreen from './DrawerScreens/NewListScreen'
+import ListDetailScreen from './DrawerScreens/ListDetailScreen';
 import SettingsScreen from './DrawerScreens/SettingsScreen';
 import CustomSideBarMenu from './Components/CustomSidebarMenu';
 import NavigationsDrawerHeader from './Components/NavigationsDrawerHeader'
@@ -92,6 +93,33 @@ const NewListScreenStack = ({ navigation }) => {
     );
 };
 
+const ListDetailScreenStack = ({ navigation }) => {
+    return (
+        <Stack.Navigator
+        initialRouteName="SettingScreen"
+        screenOptions={{
+            headerLeft:() => (
+                <NavigationsDrawerHeader navigationProps={navigation} />
+            ),
+            headerStyle: {
+                backgroundColor: '#307ecc', //Set Header color
+            },
+            headerTintColor: '#fff', //Set Header text color
+            headerTitleStyle: {
+                fontWeight: 'bold', //Set Header text style
+            },
+        }}>
+            <Stack.Screen
+                name="List Detail Screen"
+                component={ListDetailScreen}
+                options={{
+                    title: "List Details",
+                }}
+            />
+        </Stack.Navigator>
+    );
+};
+
 const DrawerNavigatorRoutes = (props) => {
     return (
       <Drawer.Navigator
@@ -114,6 +142,11 @@ const DrawerNavigatorRoutes = (props) => {
           name="NewListScreenStack"
           options={{drawerLabel: 'New List Screen'}}
           component={NewListScreenStack}
+        />
+        <Drawer.Screen
+          name="ListDetailScreenStack"
+          options={{drawerLabel: 'List Detail Screen'}}
+          component={ListDetailScreenStack}
         />
         <Drawer.Screen
           name="SettingScreenStack"

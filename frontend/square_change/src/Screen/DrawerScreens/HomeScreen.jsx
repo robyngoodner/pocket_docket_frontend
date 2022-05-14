@@ -47,9 +47,9 @@ export default function HomeScreen ({ navigation }) {
     const user = await AsyncStorage.getItem('user')
     .then(user => listService.getLists(user)) 
     .then(res => {
-      console.log("Lists res ",res.data)
+      //console.log("Lists res ",res.data)
       setLists(res.data)
-      console.log("lists after setting: ", lists)
+      //console.log("lists after setting: ", lists)
 
     })
   }
@@ -62,8 +62,14 @@ export default function HomeScreen ({ navigation }) {
   const list = () => {
     return lists.map((element, key) => {
       return (
-        <View key={element.key}>
-          <Text>{element.title}: {element.description}</Text>
+        <View key={key}>
+          <TouchableOpacity key={key}
+            onPress={() => { 
+                navigation.navigate('ListDetailScreenStack', {screen: 'List Detail Screen', params: element})}}>
+            <Text key={element.key} >
+              {element.title}: {element.description}
+            </Text>
+          </TouchableOpacity>
         </View>
       )
     })
