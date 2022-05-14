@@ -1,6 +1,7 @@
 import React,{useState, useEffect, createRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert, TextInput, ScrollView,Keyboard, KeyboardAvoidingView } from 'react-native';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { navigation } from '@react-navigation/native';
 import * as itemService from '../../api/item.service';
 import * as listService from '../../api/list.service';
@@ -16,6 +17,9 @@ export default function ListDetailScreen ({ navigation, route }) {
     const { title, id, description } = route.params
     const [body, setBody] = useState('');
     const [items, setItems ] = useState([]);
+    const [isChecked, setIsChecked] = useState(false)
+    const [completion, setCompletion] = useState(false)
+
 
     const descriptionInputRef = createRef();
 
@@ -44,8 +48,6 @@ export default function ListDetailScreen ({ navigation, route }) {
         user: userId
     }
 
-    
-
     const user = await AsyncStorage.getItem('userId')
     .then(user => listService.createList(user, list))
     .then(res => {
@@ -70,6 +72,8 @@ export default function ListDetailScreen ({ navigation, route }) {
     .then(res => {
       setLoading(false);
       console.log('res.data from addNewItem: ', res.data)
+      getItems();
+      setLoading(false)
     })
   }
 
@@ -79,8 +83,8 @@ export default function ListDetailScreen ({ navigation, route }) {
     listService.getList(id)
     .then(res => {
       setLoading(false)
-      console.log("get single list res.data: ", res.data)
-      console.log("this list's id? ",id)
+      //console.log("get single list res.data: ", res.data)
+      //console.log("this list's id? ",id)
     })
   }
 
@@ -95,14 +99,38 @@ export default function ListDetailScreen ({ navigation, route }) {
     })
   }
 
+  async function updateItemCompletion (oldItem) {
+    setErrortext('');
+    //setLoading(true);
+    if (completion === false) setCompletion(true)
+    else if (completion === true) setCompletion(false);
+    const item = {
+      id: oldItem.id,
+      body: oldItem.body,
+      complete: completion
+    }
+    console.log('update item object: ',item)
+    itemService.updateItem(item.id, item)
+    .then(res => {
+      setLoading(false)
+      console.log(res.data)
+    })
+  }
+
   const listItems = () => {
     return items.map((element, key) => {
-      console.log("list item: ",element.body)
+      console.log("list item",element)
       return (
-        <View key={key}>
+        <View style={styles.listItems} key={key}>
           <Text key={key}>
             {element.body}
           </Text>
+          <BouncyCheckbox 
+            isChecked = {element.complete}
+            onPress={(isChecked) => {updateItemCompletion(element)}}
+            fillColor="#5B5A60" 
+            size={20}
+            />
         </View>
       )
     })
@@ -125,9 +153,6 @@ export default function ListDetailScreen ({ navigation, route }) {
           source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
             style={{width: 400, height: 180}}
         />
-        {/* <View style={styles.listItems}>
-          {listItems()}
-        </View> */}
         <View style={styles.mainBody}>
         <Loader loading={loading} />
         <ScrollView
@@ -137,12 +162,14 @@ export default function ListDetailScreen ({ navigation, route }) {
             justifyContent: 'center',
             alignContent: 'center',
           }}>
+          
           <View style={styles.login}>
-            <KeyboardAvoidingView enabled>
-              <View style={styles.SectionStyle}>
+          <View style={styles.SectionStyle}>
                 {listItems()}
               </View>
-              <View style={styles.SectionStyle}>
+            <KeyboardAvoidingView enabled>
+              
+              <View style={styles.InputStyle}>
                 <TextInput
                   style={styles.inputStyle}
                   onChangeText={(body) =>
@@ -216,6 +243,12 @@ const styles = StyleSheet.create({
 
     listItems: {
       color: 'black',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingBottom: 10,
+      paddingRight: 20,
+      paddingLeft: 20
     },
   
     block3: {
@@ -261,12 +294,22 @@ const styles = StyleSheet.create({
     //   },
       SectionStyle: {
         flexDirection: 'column',
-        height: 30,
+        // height: 100,
         marginTop: 20,
         marginLeft: 10,
         marginRight: 10,
         margin: 10,
-        width: 200,
+        width: 300,
+        color: 'black',
+      },
+      InputStyle: {
+        flexDirection: 'column',
+        height: 40,
+        marginTop: 20,
+        marginLeft: 10,
+        marginRight: 10,
+        margin: 10,
+        width: 300,
         color: 'black',
       },
       buttonStyle: {
@@ -292,6 +335,7 @@ const styles = StyleSheet.create({
         color: 'white',
         paddingLeft: 15,
         paddingRight: 15,
+        height: 50,
         borderWidth: 1,
         borderRadius: 30,
         borderColor: '#dadae8',

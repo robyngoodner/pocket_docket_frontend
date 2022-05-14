@@ -20,9 +20,8 @@ async function getItems (id, data) {
     return client.get(`${item}/${id}`, data)
 }
     
-async function updateList (listId, data) {
-    listId = JSON.parse(listId);
-    return client.put(`${list}/${listId}/edit`, data)
+async function updateItem (itemId, data) {
+    return client.put(`${item}/${itemId}/edit`, data)
 }
 
 async function deleteList (listId) {
@@ -32,4 +31,4 @@ async function deleteList (listId) {
     
 
 
-export {createItem, getItems, updateList, deleteList}
+export {createItem, getItems, updateItem, deleteList}
