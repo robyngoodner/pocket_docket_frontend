@@ -30,7 +30,6 @@ async function getList (id, data) {
 }
     
 async function updateList (listId, data) {
-    listId = JSON.parse(listId);
     return client.put(`${list}/${listId}/edit`, data)
 }
 

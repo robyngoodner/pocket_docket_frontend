@@ -2,6 +2,7 @@ import React,{useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert } from 'react-native';
 import { navigation, useIsFocused } from '@react-navigation/native';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as authservice from '../../api/auth.service';
 import * as listService from '../../api/list.service'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +15,8 @@ export default function HomeScreen ({ navigation }) {
   const [userProfile, setUserProfile] = useState({})
   const [lists, setLists] = useState([]);
   const [item, setItem] = useState('');
+  const [isChecked, setIsChecked] = useState(false)
+  const [completion, setCompletion] = useState(false)
 
   const isFocused = useIsFocused();
 
@@ -67,6 +70,26 @@ export default function HomeScreen ({ navigation }) {
   //   })
   // }
   
+  async function updateListCompletion (oldList) {
+    setErrortext('');
+    //setLoading(true);
+    if (completion === false) setCompletion(true)
+    else if (completion === true) setCompletion(false);
+    else if (completion == null) setCompletion(false)
+    const list = {
+      id: oldList.id,
+      title: oldList.title,
+      description: oldList.description,
+      complete: completion
+    }
+    //console.log('update item object: ',item)
+    listService.updateList(list.id, list)
+    .then(res => {
+      setLoading(false)
+      //console.log(res.data)
+    })
+  }
+
   useEffect (() => {
   getUserProfile();
   // getLists();
@@ -76,7 +99,7 @@ export default function HomeScreen ({ navigation }) {
   const list = () => {
     return lists.map((element, key) => {
       return (
-        <View key={key}>
+        <View style={styles.listItems} key={key}>
           <TouchableOpacity key={key}
             onPress={() => { 
                 navigation.navigate('ListDetailScreenStack', {screen: 'List Detail Screen', params: element})}}>
@@ -84,6 +107,12 @@ export default function HomeScreen ({ navigation }) {
               {element.title}: {element.description}
             </Text>
           </TouchableOpacity>
+          <BouncyCheckbox 
+            isChecked = {element.complete}
+            onPress={(isChecked) => {updateListCompletion(element)}}
+            fillColor="#fff" 
+            size={20}
+            />
         </View>
       )
     })
@@ -172,7 +201,15 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       backgroundColor: '#E7EBEF'
     },
-
+    listItems: {
+      color: 'black',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingBottom: 10,
+      paddingRight: 10,
+      paddingLeft: 10
+    },
     hidden: {
       display: 'none',
       /* padding-top: 10vh; */
