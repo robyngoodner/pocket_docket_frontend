@@ -2,7 +2,7 @@ import client from './axios.config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { AsyncStorage } from 'react-native'
 
-const list = '/list';
+const item = '/item';
 
 
 // const currentUser = () => {
@@ -10,21 +10,14 @@ const list = '/list';
 //     return JSON.parse(user)
 // }
 
-async function createList (user, data) {
-    user=JSON.parse(user);
-    console.log("list service line 15 user and data: ", user, data)
-    return client.post(`${list}/new`, data)
+async function createItem (data) {
+    console.log("item service line 14 data: ", data)
+    return client.post(`${item}/new`, data)
 }
 
-async function getLists (user, data) {
-    //console.log("user ", user)    
-    user=JSON.parse(user)
-    return client.get(`${list}/${user}`, data)
-    }
-
-async function getList (id, data) {
-    console.log('list.service line 26 id: ',id)
-    return client.get(`${list}/${id}`, data)
+async function getItems (id, data) {
+    console.log("item service line 19 get items id: ", id)
+    return client.get(`${item}/${id}`, data)
 }
     
 async function updateList (listId, data) {
@@ -39,4 +32,4 @@ async function deleteList (listId) {
     
 
 
-export {createList, getLists, getList, updateList, deleteList}
+export {createItem, getItems, updateList, deleteList}

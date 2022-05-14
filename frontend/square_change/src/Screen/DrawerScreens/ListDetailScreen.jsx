@@ -2,6 +2,7 @@ import React,{useState, useEffect, createRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert, TextInput, ScrollView,Keyboard, KeyboardAvoidingView } from 'react-native';
 import { navigation } from '@react-navigation/native';
+import * as itemService from '../../api/item.service';
 import * as listService from '../../api/list.service';
 import * as authservice from '../../api/auth.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,7 +14,8 @@ export default function ListDetailScreen ({ navigation, route }) {
     const [loading, setLoading] = useState(false);
     const [errortext, setErrortext] = useState('');
     const { title, id, description } = route.params
-    const [body, setBody] = useState('')
+    const [body, setBody] = useState('');
+    const [items, setItems ] = useState([]);
 
     const descriptionInputRef = createRef();
 
@@ -29,8 +31,7 @@ export default function ListDetailScreen ({ navigation, route }) {
 
   console.log("list detail: ", id, title)
 
-  async function createNewList(e) {
-    e.preventDefault();
+  async function createNewList() {
     setErrortext('');
     if(!title) {
       alert('Please enter a title for your list');
@@ -43,13 +44,7 @@ export default function ListDetailScreen ({ navigation, route }) {
         user: userId
     }
 
-    async function addNewItem(e) {
-      e.preventDefault();
-      setErrortext('');
-      if(!body) {
-        alert('Please enter a list item');return;
-      }
-    }
+    
 
     const user = await AsyncStorage.getItem('userId')
     .then(user => listService.createList(user, list))
@@ -60,9 +55,64 @@ export default function ListDetailScreen ({ navigation, route }) {
     })
 
   }
+
+  async function addNewItem() {
+    setErrortext('');
+    if(!body) {
+      alert('Please enter a list item');return;
+    }
+    setLoading(true);
+    let item = {
+      list: id,
+      body: body
+    }
+    itemService.createItem(item)
+    .then(res => {
+      setLoading(false);
+      console.log('res.data from addNewItem: ', res.data)
+    })
+  }
+
+  async function getList() {
+    setErrortext('');
+    setLoading(true);
+    listService.getList(id)
+    .then(res => {
+      setLoading(false)
+      console.log("get single list res.data: ", res.data)
+      console.log("this list's id? ",id)
+    })
+  }
+
+  async function getItems () {
+    setErrortext('');
+    setLoading(true);
+    itemService.getItems(id)
+    .then(res => {
+      setLoading(false)
+      console.log("get items res.data: ", res.data)
+      setItems(res.data)
+    })
+  }
+
+  const listItems = () => {
+    return items.map((element, key) => {
+      console.log("list item: ",element.body)
+      return (
+        <View key={key}>
+          <Text key={key}>
+            {element.body}
+          </Text>
+        </View>
+      )
+    })
+  }
+
   
   useEffect (() => {
   getUserProfile();
+  getList();
+  getItems();
   }, []);
   
   
@@ -70,12 +120,14 @@ export default function ListDetailScreen ({ navigation, route }) {
     <View style={styles.container}>
             <View style={styles.home}>
     <SafeAreaView style={{flex: 1, padding: 20}}>
-      {/* <View style={{flex: 1, padding: 16}}> */}
         <View style={styles.container}>
           <Image
           source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
             style={{width: 400, height: 180}}
         />
+        {/* <View style={styles.listItems}>
+          {listItems()}
+        </View> */}
         <View style={styles.mainBody}>
         <Loader loading={loading} />
         <ScrollView
@@ -87,35 +139,18 @@ export default function ListDetailScreen ({ navigation, route }) {
           }}>
           <View style={styles.login}>
             <KeyboardAvoidingView enabled>
-              {/* <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={(title) =>
-                    setTitle(title)
-                  }
-                  placeholder="Enter a list title"
-                  placeholderTextColor="#8b9cb5"
-                  autoCapitalize="none"
-                  keyboardType="default"
-                  returnKeyType="next"
-                  onSubmitEditing={() =>
-                    descriptionInputRef.current &&
-                    descriptionInputRef.current.focus()
-                  }
-                  underlineColorAndroid="#f000"
-                  blurOnSubmit={false}
-                />
+              <View style={styles.SectionStyle}>
+                {listItems()}
               </View>
               <View style={styles.SectionStyle}>
                 <TextInput
                   style={styles.inputStyle}
-                  onChangeText={(description) =>
-                    setDescription(description)
+                  onChangeText={(body) =>
+                    setBody(body)
                   }
-                  placeholder="Describe your list!" //12345
+                  placeholder="Add a list item" //12345
                   placeholderTextColor="#8b9cb5"
                   keyboardType="default"
-                  ref={descriptionInputRef}
                   onSubmitEditing={Keyboard.dismiss}
                   blurOnSubmit={false}
                   underlineColorAndroid="#f000"
@@ -130,9 +165,10 @@ export default function ListDetailScreen ({ navigation, route }) {
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                onPress={createNewList}>
-                <Text style={styles.buttonTextStyle}>Create List</Text>
-              </TouchableOpacity> */}
+                onPress={addNewItem}>
+                <Text style={styles.buttonTextStyle}>Add Item</Text>
+              </TouchableOpacity>
+              
               </KeyboardAvoidingView>
               </View>
             </ScrollView>
@@ -177,6 +213,10 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       zIndex: 1000,
     },
+
+    listItems: {
+      color: 'black',
+    },
   
     block3: {
       position: 'relative',
@@ -209,7 +249,7 @@ const styles = StyleSheet.create({
 
     horizontal: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       paddingLeft: 180,
     },
     // mainBody: {
@@ -220,13 +260,14 @@ const styles = StyleSheet.create({
     //     paddingTop: 48,
     //   },
       SectionStyle: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         height: 30,
         marginTop: 20,
         marginLeft: 10,
         marginRight: 10,
         margin: 10,
         width: 200,
+        color: 'black',
       },
       buttonStyle: {
         backgroundColor: '#E7EBEF',
