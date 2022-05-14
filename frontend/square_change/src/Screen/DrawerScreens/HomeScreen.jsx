@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  
 
 export default function HomeScreen ({ navigation }) {
+  const [userId, setUserId] = useState('')
   const [userName, setUserName] = useState('');
   const [userStatus, setUserStatus] = useState('');
   const [userProfile, setUserProfile] = useState({})
@@ -21,8 +22,12 @@ export default function HomeScreen ({ navigation }) {
     const user = await AsyncStorage.getItem('user')
     .then(user => authservice.getProfile(user)) 
     .then(res => {
-      //console.log("getUserProfile2 res ",res.data)
+      console.log("getUserProfile2 res ",res.data)
+      AsyncStorage.setItem("userId", JSON.stringify(res.data.id))
       setUserProfile(res.data)
+      console.log("get user profile res.data.id: ", res.data.id)
+      setUserId(res.data.id)
+      setLists(res.data.lists)
     })
   }
 
@@ -45,20 +50,27 @@ export default function HomeScreen ({ navigation }) {
       
   }
 
-  async function getLists() {
-    const user = await AsyncStorage.getItem('user')
-    .then(user => listService.getLists(user)) 
-    .then(res => {
-      //console.log("Lists res ",res.data)
-      setLists(res.data)
-      //console.log("lists after setting: ", lists)
+  // async function getLists() {
+  //   const user = await AsyncStorage.getItem('user')
+  //   .then(user => authservice.getProfile(user))
+  //   .then(res => {
+  //     console.log("setUserId res.data.id: ", res.data.id)
+  //     setUserId(res.data.id)
+  //   })
+  //   // console.log("getLists userId: ",userId)
+  //   .then(() => listService.getLists(userId))
+  //   .then(res => {
+  //     console.log("getLists res ", res)
+  //     //setLists(res.data)
+  //     //console.log("lists after setting: ", lists)
 
-    })
-  }
+  //   })
+  // }
   
   useEffect (() => {
   getUserProfile();
-  getLists();
+  // getLists();
+  list();
   }, [isFocused]);
   
   const list = () => {
@@ -87,17 +99,16 @@ export default function HomeScreen ({ navigation }) {
         />
         <View style={styles.home}>
           <View style={styles.overlap}>
-            <Text>sQuaRe change</Text>
-            <Text>No cash? No problem. Using microtransactions to make a difference.</Text>
+            
             <Button
               title="About"
               onPress={() => { 
                 navigation.navigate('About')}} />
           </View>
-          <Text>To Do Lists: </Text>
+          <Text>{userProfile.firstName}'s To Do Lists: </Text>
           <View>{list()}</View>
           <Button
-              title="NewList"
+              title="New list"
               onPress={() => { 
                 navigation.navigate('NewListScreenStack')}} />
           <Button
@@ -106,9 +117,6 @@ export default function HomeScreen ({ navigation }) {
           <Image style={styles.block3}
             source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
           />
-          <Text>Welcome, {userProfile.firstName}.</Text>
-          <Text>{userProfile.type_user}</Text>
-          <Text style={styles.text}>Making a difference</Text>
         </View>
         <StatusBar style="auto" />
       </View>

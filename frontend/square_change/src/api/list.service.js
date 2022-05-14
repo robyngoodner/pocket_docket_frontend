@@ -17,8 +17,9 @@ async function createList (user, data) {
 }
 
 async function getLists (user, data) {
-    //console.log("user ", user)    
-    user=JSON.parse(user)
+    console.log("getLists user ", user)    
+    //user=JSON.parse(user)
+    console.log("getLists user: ", user)
     return client.get(`${list}/${user}`, data)
     }
 

@@ -56,7 +56,7 @@ export default function ListDetailScreen ({ navigation, route }) {
     .then(user => listService.createList(user, list))
     .then(res => {
         setLoading(false);
-        console.log("res.data from createnewList ", res.data)
+        //console.log("res.data from createnewList ", res.data)
         navigation.navigate('HomeScreenStack')
     })
 
