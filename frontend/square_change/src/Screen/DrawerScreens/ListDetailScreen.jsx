@@ -2,12 +2,13 @@ import React,{useState, useEffect, createRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert, TextInput, ScrollView,Keyboard, KeyboardAvoidingView } from 'react-native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { navigation } from '@react-navigation/native';
+import { navigation, useIsFocused } from '@react-navigation/native';
 import * as itemService from '../../api/item.service';
 import * as listService from '../../api/list.service';
 import * as authservice from '../../api/auth.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../Components/Loader';
+
  
 
 export default function ListDetailScreen ({ navigation, route }) {
@@ -19,6 +20,9 @@ export default function ListDetailScreen ({ navigation, route }) {
     const [items, setItems ] = useState([]);
     const [isChecked, setIsChecked] = useState(false)
     const [completion, setCompletion] = useState(false)
+    const [list, setList] = useState({})
+    
+    const isFocused = useIsFocused()
 
 
     const descriptionInputRef = createRef();
@@ -65,9 +69,11 @@ export default function ListDetailScreen ({ navigation, route }) {
     }
     setLoading(true);
     let item = {
-      list: id,
-      body: body
+      listId: id,
+      body: body,
+      complete: false
     }
+    console.log(item)
     itemService.createItem(item)
     .then(res => {
       setLoading(false);
@@ -78,23 +84,27 @@ export default function ListDetailScreen ({ navigation, route }) {
   }
 
   async function getList() {
+    console.log("is getList running")
     setErrortext('');
     setLoading(true);
     listService.getList(id)
     .then(res => {
       setLoading(false)
-      //console.log("get single list res.data: ", res.data)
+      // console.log("get single list res.data: ", res.data)
+      setList(res.data)
+      // console.log(list[0].items)
       //console.log("this list's id? ",id)
     })
   }
 
   async function getItems () {
+    console.log("getItems??")
     setErrortext('');
     setLoading(true);
     itemService.getItems(id)
     .then(res => {
       setLoading(false)
-      console.log("get items res.data: ", res.data)
+      //console.log("get items res.data: ", res.data)
       setItems(res.data)
     })
   }
@@ -109,17 +119,19 @@ export default function ListDetailScreen ({ navigation, route }) {
       body: oldItem.body,
       complete: completion
     }
-    console.log('update item object: ',item)
+    //console.log('update item object: ',item)
     itemService.updateItem(item.id, item)
     .then(res => {
       setLoading(false)
-      console.log(res.data)
+      //console.log(res.data)
     })
   }
 
   const listItems = () => {
-    return items.map((element, key) => {
-      console.log("list item",element)
+    console.log("getting to listItems")
+    if (list[0]) {
+    return list[0].items.map((element, key) => {
+      //console.log("list item",element)
       return (
         <View style={styles.listItems} key={key}>
           <Text key={key}>
@@ -134,14 +146,20 @@ export default function ListDetailScreen ({ navigation, route }) {
         </View>
       )
     })
+  } else {
+    return (
+      <View style={styles.listItems}>
+        <Text>This list is empty! Add some to-do items.</Text>
+      </View>
+    )}
   }
 
   
   useEffect (() => {
-  getUserProfile();
-  getList();
-  getItems();
-  }, []);
+    getUserProfile();
+    getList();
+    getItems();
+  }, [isFocused]);
   
   
   return (

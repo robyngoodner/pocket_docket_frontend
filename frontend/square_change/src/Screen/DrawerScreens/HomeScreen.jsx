@@ -1,7 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert } from 'react-native';
-import { navigation } from '@react-navigation/native';
+import { navigation, useIsFocused } from '@react-navigation/native';
 import * as authservice from '../../api/auth.service';
 import * as listService from '../../api/list.service'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,6 +13,8 @@ export default function HomeScreen ({ navigation }) {
   const [userProfile, setUserProfile] = useState({})
   const [lists, setLists] = useState([]);
   const [item, setItem] = useState('');
+
+  const isFocused = useIsFocused();
 
 
   async function getUserProfile() {
@@ -57,7 +59,7 @@ export default function HomeScreen ({ navigation }) {
   useEffect (() => {
   getUserProfile();
   getLists();
-  }, []);
+  }, [isFocused]);
   
   const list = () => {
     return lists.map((element, key) => {

@@ -4,12 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const item = '/item';
 
-
-// const currentUser = () => {
-//     let user = AsyncStorage.getItem("userId");
-//     return JSON.parse(user)
-// }
-
 async function createItem (data) {
     console.log("item service line 14 data: ", data)
     return client.post(`${item}/new`, data)

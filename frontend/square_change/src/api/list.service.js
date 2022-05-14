@@ -24,7 +24,8 @@ async function getLists (user, data) {
 
 async function getList (id, data) {
     console.log('list.service line 26 id: ',id)
-    return client.get(`${list}/${id}`, data)
+    id=JSON.parse(id)
+    return client.get(`${list}/detail/${id}`, id, data)
 }
     
 async function updateList (listId, data) {
