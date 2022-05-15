@@ -25,7 +25,7 @@ export default function ListDetailScreen ({ navigation, route }) {
     const isFocused = useIsFocused()
 
 
-    const descriptionInputRef = createRef();
+
 
   async function getUserProfile() {
     const user = await AsyncStorage.getItem('user')
@@ -61,9 +61,10 @@ export default function ListDetailScreen ({ navigation, route }) {
     })
 
   }
-
+  const itemBodyRef = createRef();
   async function addNewItem() {
     setErrortext('');
+    
     if(!body) {
       alert('Please enter a list item');return;
     }
@@ -78,9 +79,14 @@ export default function ListDetailScreen ({ navigation, route }) {
     .then(res => {
       setLoading(false);
       console.log('res.data from addNewItem: ', res.data)
-      getItems();
+      getList();
       setLoading(false)
     })
+    .then(() => setLoading(false))
+  }
+
+  const clearBody = () => {
+    setBody('')
   }
 
   async function getList() {
@@ -95,6 +101,7 @@ export default function ListDetailScreen ({ navigation, route }) {
       // console.log(list[0].items)
       //console.log("this list's id? ",id)
     })
+    .then(() => setLoading(false))
   }
 
   async function getItems () {
@@ -107,6 +114,7 @@ export default function ListDetailScreen ({ navigation, route }) {
       //console.log("get items res.data: ", res.data)
       setItems(res.data)
     })
+    .then(() => setLoading(false))
   }
 
   async function updateItemCompletion (oldItem) {
@@ -192,6 +200,7 @@ export default function ListDetailScreen ({ navigation, route }) {
                   style={styles.inputStyle}
                   onChangeText={(body) =>
                     setBody(body)
+                    
                   }
                   placeholder="Add a list item" //12345
                   placeholderTextColor="#8b9cb5"
@@ -200,6 +209,9 @@ export default function ListDetailScreen ({ navigation, route }) {
                   blurOnSubmit={false}
                   underlineColorAndroid="#f000"
                   returnKeyType="next"
+                  ref={itemBodyRef}
+                  clearButtonMode="always"
+                  value={body}
                 />
               </View>
               {errortext != '' ? (
@@ -210,7 +222,9 @@ export default function ListDetailScreen ({ navigation, route }) {
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                onPress={addNewItem}>
+                onPress={() => {
+                  addNewItem(), clearBody()}}
+                >
                 <Text style={styles.buttonTextStyle}>Add Item</Text>
               </TouchableOpacity>
               
