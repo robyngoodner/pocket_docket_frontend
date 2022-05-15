@@ -120,7 +120,7 @@ export default function HomeScreen ({ navigation }) {
       {/* <View style={{flex: 1, padding: 16}}> */}
         <View style={styles.container}>
           <Image
-          source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
+          source={require('../../assets/imgs/shutterstock_705724939.jpg')} 
             style={{width: 400, height: 180}}
         />
         <View style={styles.home}>

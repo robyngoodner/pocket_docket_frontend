@@ -58,16 +58,12 @@ export default function Login ({ navigation }) {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/imgs/shutterstock_739769911.jpg')} 
-            style={{width: 400, height: 200}}
-      />
+          source={require('../assets/imgs/Top_todo.jpg')} 
+            style={{width: 400, height: 180}}
+        />
       <View style={styles.overlap}>
-        <Text>sQuaRe change</Text>
-        <Text>No cash? No problem. Using microtransactions to make a difference.</Text>
-        <Button
-          title="About"
-          onPress={() => { 
-            navigation.navigate('About')}} />
+        <Text style={{fontSize: 30,color: '#FFFBF0',}}>Pocket Docket</Text>
+        <Text style={styles.text}>Organize your life</Text>
       </View>
       <View style={styles.mainBody}>
         <Loader loading={loading} />
@@ -82,12 +78,13 @@ export default function Login ({ navigation }) {
             <KeyboardAvoidingView enabled>
               <View style={styles.SectionStyle}>
                 <TextInput
+                  onPress={() => {keyboardWillShow()}}
                   style={styles.inputStyle}
                   onChangeText={(UserEmail) =>
                     setUserEmail(UserEmail)
                   }
                   placeholder="Enter Email" //dummy@abc.com
-                  placeholderTextColor="#8b9cb5"
+                  placeholderTextColor="#efe8d7"
                   autoCapitalize="none"
                   keyboardType="email-address"
                   returnKeyType="next"
@@ -106,7 +103,7 @@ export default function Login ({ navigation }) {
                     setUserPassword(UserPassword)
                   }
                   placeholder="Enter Password" //12345
-                  placeholderTextColor="#8b9cb5"
+                  placeholderTextColor="#efe8d7"
                   keyboardType="default"
                   ref={passwordInputRef}
                   onSubmitEditing={Keyboard.dismiss}
@@ -137,11 +134,12 @@ export default function Login ({ navigation }) {
             </KeyboardAvoidingView>
           </View>
         </ScrollView>
-        <Image style={styles.block3}
-          source={require('../assets/imgs/shutterstock_1145004488.jpg')} 
-        />
-        <Text style={styles.text}>Making a difference</Text>
+        
       </View>
+      <Image
+          source={require('../assets/imgs/Bottom_todo_list_only.jpg')} 
+            style={{width: 400, height: 75}}
+        />
     </View>
   );
 };
@@ -151,20 +149,21 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#5B5A60',
+    backgroundColor: '#4f5e31',
     alignContent: 'center',
-    paddingTop: 48,
+    paddingTop: 50,
+    width: 400,
   },
   SectionStyle: {
     flexDirection: 'row',
-    height: 30,
+    height: 40,
     marginTop: 20,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
   },
   buttonStyle: {
-    backgroundColor: '#E7EBEF',
+    backgroundColor: '#FFFBF0',
     borderWidth: 0,
     color: '#5B5A60',
     borderColor: '#7DE24E',
@@ -183,15 +182,15 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     flex: 1,
-    color: 'white',
+    color: '#FFFBF0',
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#dadae8',
+    borderColor: '#FFFBF0',
   },
   registerTextStyle: {
-    color: '#FFFFFF',
+    color: '#FFFBF0',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 14,
@@ -200,10 +199,10 @@ const styles = StyleSheet.create({
   },
    registerText: {
      position: 'relative',
-     top: -20
+     top: 0
     },
   errorTextStyle: {
-    color: 'red',
+    color: '#FFFBF0',
     textAlign: 'center',
     fontSize: 14,
   },
@@ -212,7 +211,7 @@ const styles = StyleSheet.create({
   },
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#FFFBF0',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -225,17 +224,19 @@ const styles = StyleSheet.create({
   
     overlap: {
       position:'absolute',
-      bottom: 445,
-      left: 4,
-      backgroundColor: '#E7EBEF',
+      top: 180,
+      display: 'flex',
+      justifyContent: 'center',
+      color: '#FFFBF0',
       /* border: 2px solid #5B5A60,
       border-radius: 10px, */
-      marginRight: 150,
-      marginLeft: 30,
-      padding: 20,
+      // marginRight: 110,
+      // marginLeft: 30,
+      padding: 30,
       display: 'flex',
       flexDirection: 'column',
       zIndex: 1000,
+      fontSize: 20,
     },
   
     block3: {
@@ -247,8 +248,11 @@ const styles = StyleSheet.create({
   
     text: {
       position: 'relative',
-      top: -50,
-      paddingLeft: 20,
+      display: 'flex',
+      justifyContent: 'center',
+      fontSize: 18,
+      marginLeft: 20,
+      color: '#FFFBF0',
     },
 
   });
