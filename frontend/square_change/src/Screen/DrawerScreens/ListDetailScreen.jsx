@@ -123,8 +123,8 @@ export default function ListDetailScreen ({ navigation, route }) {
   async function updateItemCompletion (oldItem) {
     setErrortext('');
     //setLoading(true);
-    if (completion === false) setCompletion(true)
-    else if (completion === true) setCompletion(false);
+    if (oldItem.complete === false) setCompletion(true)
+    else if (oldItem.complete === true) setCompletion(false);
     const item = {
       id: oldItem.id,
       body: oldItem.body,
@@ -142,7 +142,7 @@ export default function ListDetailScreen ({ navigation, route }) {
     console.log("getting to listItems")
     if (list[0]) {
     return list[0].items.map((element, key) => {
-      //console.log("list item",element)
+      console.log("list item",element)
       return (
         <View style={styles.listItems} key={key}>
           <Text key={key}>

@@ -26,10 +26,10 @@ export default function HomeScreen ({ navigation }) {
     const user = await AsyncStorage.getItem('user')
     .then(user => authservice.getProfile(user)) 
     .then(res => {
-      console.log("getUserProfile2 res ",res.data)
+      //console.log("getUserProfile2 res ",res.data)
       AsyncStorage.setItem("userId", JSON.stringify(res.data.id))
       setUserProfile(res.data)
-      console.log("get user profile res.data.id: ", res.data.id)
+      //console.log("get user profile res.data.id: ", res.data.id)
       setUserId(res.data.id)
       setLists(res.data.lists)
     })
@@ -58,22 +58,18 @@ export default function HomeScreen ({ navigation }) {
   async function updateListCompletion (oldList) {
     // setErrortext('');
     setLoading(true);
-    if (completion === true) {
-      setCompletion(false)
-    } else {
-      setCompletion(true);
-    }
     const list = {
       id: oldList.id,
       title: oldList.title,
       description: oldList.description,
-      complete: completion,
+      complete: true,
     }
     console.log('update item object: ',list)
     listService.updateList(list.id, list)
     .then(res => {
       setLoading(false)
       console.log("list update? ",res.data)
+      setLists([])
       //console.log(res.data)
       getUserProfile();
     })

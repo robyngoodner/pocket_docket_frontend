@@ -58,7 +58,7 @@ export default function HomeScreen ({ navigation }) {
   async function updateListCompletion (oldList) {
     // setErrortext('');
     setLoading(true);
-    if (completion === true) {
+    if (oldList.complete === true) {
       setCompletion(false)
     } else {
       setCompletion(true);
@@ -75,6 +75,7 @@ export default function HomeScreen ({ navigation }) {
       setLoading(false)
       console.log("list update? ",res.data)
       //console.log(res.data)
+      setCompletion(false)
       getUserProfile();
     })
   }
