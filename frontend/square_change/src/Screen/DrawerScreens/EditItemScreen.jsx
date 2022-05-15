@@ -12,24 +12,17 @@ import Loader from '../Components/Loader';
 
  
 
-export default function ListDetailScreen ({ navigation, route }) {
-    const [userId, setUserId] = useState();
-    const [loading, setLoading] = useState(false);
-    const [errortext, setErrortext] = useState('');
-    const { title, id, description } = route.params
-    const [body, setBody] = useState('');
-    const [items, setItems ] = useState([]);
-    const [isChecked, setIsChecked] = useState(false)
-    const [completion, setCompletion] = useState(false)
-    const [list, setList] = useState({})
-    const [SMSArray, setSMSArray] = useState([])
-    const [SMSBody, setSMSBody] = useState('')
-    const [showEditList, setShowEditList] = useState(false)
-    
-    const isFocused = useIsFocused()
-
-    console.log("list detail screen line 31 id: ",id)
-
+export default function EditItemScreen ({ navigation, route }) {
+  const [userId, setUserId] = useState();
+  const [loading, setLoading] = useState(false);
+  const [errortext, setErrortext] = useState('');
+  const { body, id } = route.params
+  const [list, setList] = useState({})
+  const [itemBody, setItemBody] = useState('');
+  
+  
+  const isFocused = useIsFocused()
+  const descriptionRef = createRef();
 
   async function getUserProfile() {
     const user = await AsyncStorage.getItem('user')
@@ -41,53 +34,7 @@ export default function ListDetailScreen ({ navigation, route }) {
   }
 
 
-  console.log("list detail: ", id, title)
-
-  async function createNewList() {
-    setErrortext('');
-    if(!title) {
-      alert('Please enter a title for your list');
-      return;
-    }
-    setLoading(true);
-    let list = {
-        title: title,
-        description: description,
-        user: userId
-    }
-
-    const user = await AsyncStorage.getItem('userId')
-    .then(user => listService.createList(user, list))
-    .then(res => {
-        setLoading(false);
-        //console.log("res.data from createnewList ", res.data)
-        navigation.navigate('HomeScreenStack')
-    })
-
-  }
   const itemBodyRef = createRef();
-  async function addNewItem() {
-    setErrortext('');
-    
-    if(!body) {
-      alert('Please enter a list item');return;
-    }
-    setLoading(true);
-    let item = {
-      listId: id,
-      body: body,
-      complete: false
-    }
-    console.log(item)
-    itemService.createItem(item)
-    .then(res => {
-      setLoading(false);
-      console.log('res.data from addNewItem: ', res.data)
-      getList();
-      setLoading(false)
-    })
-    .then(() => setLoading(false))
-  }
 
   const clearBody = () => {
     setBody('')
@@ -108,29 +55,6 @@ export default function ListDetailScreen ({ navigation, route }) {
     .then(() => setLoading(false))
   }
 
-  async function delList() {
-    setErrortext('');
-    setLoading(true);
-    listService.deleteList(id)
-    .then(res => {
-      setLoading(false)
-          navigation.navigate('HomeScreenStack')}
-    )
-    .then(() => setLoading(false))
-  }
-
-  const deleteAlert = () => {
-    Alert.alert('Delete List', 'Are you sure you want to delete this list?', [
-      {text: 'Cancel', onPress: () => console.log('Canceled'),
-      style: 'cancel', 
-      },
-      {text: 'Delete', onPress: () => {
-        delList()
-       }}
-    ])
-    
-}
-
   async function getItems () {
     console.log("getItems??")
     setErrortext('');
@@ -144,67 +68,22 @@ export default function ListDetailScreen ({ navigation, route }) {
     .then(() => setLoading(false))
   }
 
-  async function updateItemCompletion (oldItem) {
+  const editItem = () => {
     setErrortext('');
     //setLoading(true);
-    if (oldItem.complete === false) setCompletion(true)
-    else if (oldItem.complete === true) setCompletion(false);
+    if(!itemBody){
+      setItemBody(body)
+    }
     const item = {
-      id: oldItem.id,
-      body: oldItem.body,
-      complete: completion
+      id: id,
+      body: itemBody,
     }
     //console.log('update item object: ',item)
     itemService.updateItem(item.id, item)
     .then(res => {
       setLoading(false)
-      //console.log(res.data)
+      console.log(res.data)
     })
-  }
-
-  const listItems = () => {
-    console.log("getting to listItems")
-    if (list[0]) {
-    return list[0].items.map((element, key) => {
-      console.log("list item",element)
-      return (
-        <View style={styles.listItems} key={key}>
-          <TouchableOpacity
-            onPress = {() =>navigation.navigate('EditItemScreenStack', {screen: 'Edit Item Screen', params: element})}>
-            <Text key={key}>
-              {element.body}
-            </Text>
-          </TouchableOpacity>
-          <BouncyCheckbox 
-            isChecked = {element.complete}
-            onPress={(isChecked) => {updateItemCompletion(element)}}
-            fillColor="#5B5A60" 
-            size={20}
-            />
-        </View>
-      )
-    })
-  } else {
-    return (
-      <View style={styles.listItems}>
-        <Text>This list is empty! Add some to-do items.</Text>
-      </View>
-    )}
-  }
-
-  const sendSMS = () => {
-    items.map((element) => {
-      if(element.complete === false) {
-        SMSArray.push(element.body)
-      }
-    })
-    setSMSBody(SMSArray.join(", "))
-
-    console.log(SMSBody)
-
-    const operator = Platform.select({ios: '&', android: '?'});
-    Linking.openURL(`sms:${operator}body=${SMSBody}`);
-    setSMSArray([])
   }
 
   
@@ -235,40 +114,23 @@ export default function ListDetailScreen ({ navigation, route }) {
             justifyContent: 'center',
             alignContent: 'center',
           }}>
-          
           <View style={styles.login}>
-          <View style={styles.SectionStyle}>
-            <Text>{list[0]? list[0].title : null}</Text>
-            <Text>{list[0]? list[0].description : null}</Text>
-            <Button
-              title="Edit list"
-              onPress={() => { 
-                  navigation.navigate('EditListDetailScreenStack', {screen: 'Edit List Detail Screen', params: list[0]})}}
-            ></Button>
-            <Button
-              title="Delete list"
-              onPress={deleteAlert} />
-                {listItems()}
-              </View>
             <KeyboardAvoidingView enabled>
-              
               <View style={styles.InputStyle}>
                 <TextInput
                   style={styles.inputStyle}
                   onChangeText={(body) =>
-                    setBody(body)
-                    
+                    setItemBody(body)
                   }
-                  placeholder="Add a list item" //12345
+                  placeholder={body} //12345
                   placeholderTextColor="#8b9cb5"
                   keyboardType="default"
-                  onSubmitEditing={Keyboard.dismiss}
                   blurOnSubmit={false}
                   underlineColorAndroid="#f000"
                   returnKeyType="next"
-                  ref={itemBodyRef}
+                  onSubmitEditing={Keyboard.dismiss}
                   clearButtonMode="always"
-                  value={body}
+                  defaultValue={body}
                 />
               </View>
               {errortext != '' ? (
@@ -280,19 +142,11 @@ export default function ListDetailScreen ({ navigation, route }) {
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
                 onPress={() => {
-                  addNewItem(), clearBody()}}
+                  editItem(), 
+                  navigation.navigate('ListDetailScreenStack')}}
                 >
-                <Text style={styles.buttonTextStyle}>Add Item</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.buttonStyle}
-                activeOpacity={0.5}
-                onPress={() => {
-                  sendSMS()}}
-                >
-                <Text style={styles.buttonTextStyle}>Text your list</Text>
-              </TouchableOpacity>
-              
+                <Text style={styles.buttonTextStyle}>Submit changes</Text>
+              </TouchableOpacity>              
               </KeyboardAvoidingView>
               </View>
             </ScrollView>

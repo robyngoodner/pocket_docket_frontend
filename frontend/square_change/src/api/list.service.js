@@ -24,7 +24,7 @@ async function getLists (user, data) {
     }
 
 async function getList (id, data) {
-    console.log('list.service line 26 id: ',id)
+    //console.log('list.service line 26 id: ',id)
     id=JSON.parse(id)
     return client.get(`${list}/detail/${id}`, id, data)
 }
@@ -34,7 +34,7 @@ async function updateList (listId, data) {
 }
 
 async function deleteList (listId) {
-    listId = JSON.parse(listId);
+    console.log("listservice delete: ",listId)
     await client.delete(`${list}/${listId}/delete`);
 }
     
