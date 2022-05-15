@@ -4,7 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import HomeScreen from './DrawerScreens/HomeScreen';
-import NewListScreen from './DrawerScreens/NewListScreen'
+import NewListScreen from './DrawerScreens/NewListScreen';
+import AllListsScreen from './DrawerScreens/AllListsScreen';
 import ListDetailScreen from './DrawerScreens/ListDetailScreen';
 import SettingsScreen from './DrawerScreens/SettingsScreen';
 import CustomSideBarMenu from './Components/CustomSidebarMenu';
@@ -93,6 +94,33 @@ const NewListScreenStack = ({ navigation }) => {
     );
 };
 
+const AllListsScreenStack = ({ navigation }) => {
+    return (
+        <Stack.Navigator
+        initialRouteName="SettingScreen"
+        screenOptions={{
+            headerLeft:() => (
+                <NavigationsDrawerHeader navigationProps={navigation} />
+            ),
+            headerStyle: {
+                backgroundColor: '#307ecc', //Set Header color
+            },
+            headerTintColor: '#fff', //Set Header text color
+            headerTitleStyle: {
+                fontWeight: 'bold', //Set Header text style
+            },
+        }}>
+            <Stack.Screen
+                name="All Lists Screen"
+                component={AllListsScreen}
+                options={{
+                    title: "All Lists",
+                }}
+            />
+        </Stack.Navigator>
+    );
+};
+
 const ListDetailScreenStack = ({ navigation }) => {
     return (
         <Stack.Navigator
@@ -135,24 +163,29 @@ const DrawerNavigatorRoutes = (props) => {
         drawerContent={CustomSideBarMenu}>
         <Drawer.Screen
           name="HomeScreenStack"
-          options={{drawerLabel: 'Home Screen'}}
+          options={{drawerLabel: 'Home'}}
           component={HomeScreenStack}
         />
         <Drawer.Screen
           name="NewListScreenStack"
-          options={{drawerLabel: 'New List Screen'}}
+          options={{drawerLabel: 'New List'}}
           component={NewListScreenStack}
+        />
+        <Drawer.Screen
+          name="AllListsScreenStack"
+          options={{drawerLabel: 'All Lists'}}
+          component={AllListsScreenStack}
         />
         <Drawer.Screen
           name="ListDetailScreenStack"
           options={{drawerLabel: 'List Detail Screen'}}
           component={ListDetailScreenStack}
         />
-        <Drawer.Screen
+        {/* <Drawer.Screen
           name="SettingScreenStack"
           options={{drawerLabel: 'Setting Screen'}}
           component={SettingScreenStack}
-        />
+        /> */}
       </Drawer.Navigator>
     );
   };

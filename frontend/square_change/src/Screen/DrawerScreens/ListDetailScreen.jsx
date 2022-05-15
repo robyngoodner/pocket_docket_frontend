@@ -1,8 +1,9 @@
-import React,{useState, useEffect, createRef} from 'react';
+import React,{useState, useEffect, createRef, useCallback} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert, TextInput, ScrollView,Keyboard, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert, TextInput, ScrollView,Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { navigation, useIsFocused } from '@react-navigation/native';
+import SendSMS from 'react-native-sms';
 import * as itemService from '../../api/item.service';
 import * as listService from '../../api/list.service';
 import * as authservice from '../../api/auth.service';
@@ -21,6 +22,8 @@ export default function ListDetailScreen ({ navigation, route }) {
     const [isChecked, setIsChecked] = useState(false)
     const [completion, setCompletion] = useState(false)
     const [list, setList] = useState({})
+    const [SMSArray, setSMSArray] = useState([])
+    const [SMSBody, setSMSBody] = useState('')
     
     const isFocused = useIsFocused()
 
@@ -162,6 +165,21 @@ export default function ListDetailScreen ({ navigation, route }) {
     )}
   }
 
+  const sendSMS = () => {
+    items.map((element) => {
+      if(element.complete === false) {
+        SMSArray.push(element.body)
+      }
+    })
+    setSMSBody(SMSArray.join(", "))
+
+    console.log(SMSBody)
+
+    const operator = Platform.select({ios: '&', android: '?'});
+    Linking.openURL(`sms:${operator}body=${SMSBody}`);
+    setSMSArray([])
+  }
+
   
   useEffect (() => {
     getUserProfile();
@@ -226,6 +244,14 @@ export default function ListDetailScreen ({ navigation, route }) {
                   addNewItem(), clearBody()}}
                 >
                 <Text style={styles.buttonTextStyle}>Add Item</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={() => {
+                  sendSMS()}}
+                >
+                <Text style={styles.buttonTextStyle}>Text your list</Text>
               </TouchableOpacity>
               
               </KeyboardAvoidingView>

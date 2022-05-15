@@ -88,7 +88,6 @@ export default function HomeScreen ({ navigation }) {
   const list = () => {
     if(lists) {
       return lists.map((element, key) => {
-        if(!element.complete === true) {
         return (
           <View style={styles.listItems} key={key}>
             <TouchableOpacity key={key}
@@ -106,9 +105,6 @@ export default function HomeScreen ({ navigation }) {
               />
           </View>
         )
-      } else {
-        return null
-      }
       })
     } else {
       return (
@@ -135,16 +131,12 @@ export default function HomeScreen ({ navigation }) {
               onPress={() => { 
                 navigation.navigate('About')}} />
           </View>
-          <Text>{userProfile.firstName}'s Current To Do Lists: </Text>
+          <Text>{userProfile.firstName}'s To Do Lists: </Text>
           <View>{list()}</View>
           <Button
               title="New list"
               onPress={() => { 
                 navigation.navigate('NewListScreenStack')}} />
-                <Button
-              title="All lists"
-              onPress={() => { 
-                navigation.navigate('AllListsScreenStack')}} />
           <Button
               title="Delete profile"
               onPress={deleteAlert} />
