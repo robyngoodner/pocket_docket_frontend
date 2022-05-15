@@ -12,7 +12,7 @@ import Loader from '../Components/Loader';
  
 
 export default function ListDetailScreen ({ navigation, route }) {
-    const [userId, setUserId] = useState({})
+    const [userId, setUserId] = useState();
     const [loading, setLoading] = useState(false);
     const [errortext, setErrortext] = useState('');
     const { title, id, description } = route.params

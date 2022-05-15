@@ -9,7 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  
 
 export default function HomeScreen ({ navigation }) {
-  const [userId, setUserId] = useState('')
+  const [userId, setUserId] = useState('');
+  const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState('');
   const [userStatus, setUserStatus] = useState('');
   const [userProfile, setUserProfile] = useState({})
@@ -53,40 +54,28 @@ export default function HomeScreen ({ navigation }) {
       
   }
 
-  // async function getLists() {
-  //   const user = await AsyncStorage.getItem('user')
-  //   .then(user => authservice.getProfile(user))
-  //   .then(res => {
-  //     console.log("setUserId res.data.id: ", res.data.id)
-  //     setUserId(res.data.id)
-  //   })
-  //   // console.log("getLists userId: ",userId)
-  //   .then(() => listService.getLists(userId))
-  //   .then(res => {
-  //     console.log("getLists res ", res)
-  //     //setLists(res.data)
-  //     //console.log("lists after setting: ", lists)
-
-  //   })
-  // }
   
   async function updateListCompletion (oldList) {
-    setErrortext('');
-    //setLoading(true);
-    if (completion === false) setCompletion(true)
-    else if (completion === true) setCompletion(false);
-    else if (completion == null) setCompletion(false)
+    // setErrortext('');
+    setLoading(true);
+    if (completion === true) {
+      setCompletion(false)
+    } else {
+      setCompletion(true);
+    }
     const list = {
       id: oldList.id,
       title: oldList.title,
       description: oldList.description,
-      complete: completion
+      complete: completion,
     }
-    //console.log('update item object: ',item)
+    console.log('update item object: ',list)
     listService.updateList(list.id, list)
     .then(res => {
       setLoading(false)
+      console.log("list update? ",res.data)
       //console.log(res.data)
+      getUserProfile();
     })
   }
 
@@ -97,25 +86,37 @@ export default function HomeScreen ({ navigation }) {
   }, [isFocused]);
   
   const list = () => {
-    return lists.map((element, key) => {
+    if(lists) {
+      return lists.map((element, key) => {
+        if(!element.complete === true) {
+        return (
+          <View style={styles.listItems} key={key}>
+            <TouchableOpacity key={key}
+              onPress={() => { 
+                  navigation.navigate('ListDetailScreenStack', {screen: 'List Detail Screen', params: element})}}>
+              <Text key={element.key} >
+                {element.title}: {element.description}
+              </Text>
+            </TouchableOpacity>
+            <BouncyCheckbox 
+              isChecked = {element.complete}
+              onPress={(isChecked) => {updateListCompletion(element)}}
+              fillColor="#fff" 
+              size={20}
+              />
+          </View>
+        )
+      } else {
+        return null
+      }
+      })
+    } else {
       return (
-        <View style={styles.listItems} key={key}>
-          <TouchableOpacity key={key}
-            onPress={() => { 
-                navigation.navigate('ListDetailScreenStack', {screen: 'List Detail Screen', params: element})}}>
-            <Text key={element.key} >
-              {element.title}: {element.description}
-            </Text>
-          </TouchableOpacity>
-          <BouncyCheckbox 
-            isChecked = {element.complete}
-            onPress={(isChecked) => {updateListCompletion(element)}}
-            fillColor="#fff" 
-            size={20}
-            />
-        </View>
+      <View style={styles.listItems}>
+        <Text>You have no lists! Begin by adding a to-do list.</Text>
+      </View>
       )
-    })
+    }
   }
   
   return (
