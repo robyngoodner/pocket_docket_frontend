@@ -1,11 +1,13 @@
-import React, {useState, createRef} from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, TextInput, ScrollView,Keyboard, KeyboardAvoidingView } from 'react-native';
-import { navigation } from '@react-navigation/native';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Loader from './Components/Loader';
+import React, {useState, createRef, useCallback, } from 'react';
 import axios from 'axios';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, TextInput, ScrollView,Keyboard, KeyboardAvoidingView} from 'react-native';
+import { navigation, useFocusEffect } from '@react-navigation/native';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import Loader from './Components/Loader';
 import * as authService from '../api/auth.service'
 
 export default function Login ({ navigation }) {
@@ -15,6 +17,12 @@ export default function Login ({ navigation }) {
   const [errortext, setErrortext] = useState('');
 
   const passwordInputRef = createRef();
+
+  //Keyboard handling
+  
+  
+  
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,8 +75,10 @@ export default function Login ({ navigation }) {
       </View>
       <View style={styles.mainBody}>
         <Loader loading={loading} />
-        <ScrollView
+        <KeyboardAwareScrollView
           keyboardShouldPersistTaps="handled"
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          scrollEnabled={false}
           contentContainerStyle={{
             flex: 1,
             justifyContent: 'center',
@@ -133,7 +143,7 @@ export default function Login ({ navigation }) {
               </View>
             </KeyboardAvoidingView>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
         
       </View>
       <Image
@@ -215,13 +225,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-  
-    home: {
-      width: 375,
-      backgroundColor :'#5B5A60',
-      height: 500,
-    },
-  
     overlap: {
       position:'absolute',
       top: 180,
@@ -237,15 +240,7 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       zIndex: 1000,
       fontSize: 20,
-    },
-  
-    block3: {
-      position: 'relative',
-      bottom: -50,
-      width: 400, 
-      height: 200
-    },
-  
+    },  
     text: {
       position: 'relative',
       display: 'flex',

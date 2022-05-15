@@ -15,12 +15,12 @@ const CustomSidebarMenu = (props) => {
     <View style={stylesSidebar.sideMenuContainer}>
       <View style={stylesSidebar.profileHeader}>
         <View style={stylesSidebar.profileHeaderPicCircle}>
-          <Text style={{fontSize: 25, color: 'black'}}>
-            {'sQuaRe change'.charAt(0)}
+          <Text style={{fontSize: 25, color: '#00050a'}}>
+            PD
           </Text>
         </View>
         <Text style={stylesSidebar.profileHeaderText}>
-        sQuaRe change
+        Pocket Docket
         </Text>
       </View>
       <View style={stylesSidebar.profileHeaderLine} />
@@ -29,7 +29,7 @@ const CustomSidebarMenu = (props) => {
         <DrawerItemList {...props} />
         <DrawerItem
           label={({color}) => 
-            <Text style={{color: '#d8d8d8'}}>
+            <Text style={{color: '#98BBD8'}}>
               Logout
             </Text>
           }
@@ -89,7 +89,7 @@ const stylesSidebar = StyleSheet.create({
     alignItems: 'center',
   },
   profileHeaderText: {
-    color: 'white',
+    color: '#00050a',
     alignSelf: 'center',
     paddingHorizontal: 10,
     fontWeight: 'bold',
@@ -97,7 +97,7 @@ const stylesSidebar = StyleSheet.create({
   profileHeaderLine: {
     height: 1,
     marginHorizontal: 20,
-    backgroundColor: '#E7EBEF',
+    backgroundColor: '#00050a',
     marginTop: 15,
   },
 });

@@ -14,7 +14,7 @@ import Loader from '../Components/Loader';
 
  
 
-export default function EditItemScreen ({ navigation, route }) {
+export default function EditItem ({ navigation, route }) {
   const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
@@ -110,10 +110,6 @@ export default function EditItemScreen ({ navigation, route }) {
               justifyContent: 'center',
               alignContent: 'center',
             }}>
-        <Image
-          source={require('../../assets/imgs/Top_todo.jpg')} 
-            style={{width: 400, height: 180}}
-        />
         <View style={styles.home}>
           <Loader loading={loading} />
           <View style={styles.SectionStyle}>
@@ -151,10 +147,6 @@ export default function EditItemScreen ({ navigation, route }) {
               </View>
             </View>
         <StatusBar style="auto" />
-        <Image
-          source={require('../../assets/imgs/Bottom_todo_list_only.jpg')} 
-            style={{width: 400, height: 130}}
-        />
   </KeyboardAwareScrollView>
   </ScrollView>
   </SafeAreaView>
@@ -174,17 +166,12 @@ const styles = StyleSheet.create({
       backgroundColor :'#DDE0DD',
       position: 'relative',
       bottom: 0,
-      paddingBottom: 40,
     },
     SectionStyle: {
       maxWidth: '100%',
       flexDirection: 'column',
-      marginTop: 15,
       marginLeft: 10,
       marginRight: 10,
-      margin: 10,
-      paddingTop: 40,
-      paddingBottom: 40,
     },
     listItems: {
       color: '#2D608F',

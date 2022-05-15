@@ -90,14 +90,14 @@ export default function HomeScreen ({ navigation }) {
             <TouchableOpacity key={key}
               onPress={() => { 
                   navigation.navigate('ListDetailScreenStack', {screen: 'List Detail Screen', params: element})}}>
-              <Text key={element.key} >
+              <Text  style={styles.listText} key={element.key} >
                 {element.title}: {element.description}
               </Text>
             </TouchableOpacity>
             <BouncyCheckbox 
               isChecked = {element.complete}
               onPress={(isChecked) => {updateListCompletion(element)}}
-              fillColor="#fff" 
+              fillColor="#98BBD8" 
               size={20}
               />
           </View>
@@ -117,40 +117,38 @@ export default function HomeScreen ({ navigation }) {
   
   return (
     <SafeAreaView style={{flex: 1}}>
-      {/* <View style={{flex: 1, padding: 16}}> */}
-        <View style={styles.container}>
-          <Image
-          source={require('../../assets/imgs/shutterstock_705724939.jpg')} 
+      <View style={styles.container}>
+        <Image
+          source={require('../../assets/imgs/Center_todo.jpg')} 
             style={{width: 400, height: 180}}
         />
         <View style={styles.home}>
           <View style={styles.overlap}>
-            
-            <Button
-              title="About"
-              onPress={() => { 
-                navigation.navigate('About')}} />
+            <Text style={{fontSize: 18,color: '#00050a',}}>{userProfile.firstName}'s current to-do lists: </Text>
           </View>
-          <Text>{userProfile.firstName}'s Current To Do Lists: </Text>
+          
           <View>{list()}</View>
-          <Button
+          <View style={styles.buttons}>
+            <Button
               title="New list"
+              color='#1c5d8e'
               onPress={() => { 
                 navigation.navigate('NewListScreenStack')}} />
-                <Button
+            <Button
               title="All lists"
+              color='#1c5d8e'
               onPress={() => { 
                 navigation.navigate('AllListsScreenStack')}} />
-          <Button
+          </View>
+          <View style={styles.buttons}>
+            <Button
               title="Delete profile"
+              color='#1c5d8e'
               onPress={deleteAlert} />
-          <Image style={styles.block3}
-            source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
-          />
+          </View>
         </View>
-        <StatusBar style="auto" />
-      </View>
-    {/* </View> */}
+      <StatusBar style="auto" />
+    </View>
   </SafeAreaView>
   );
 }
@@ -165,45 +163,30 @@ const styles = StyleSheet.create({
   
     home: {
       width: 375,
-      backgroundColor :'#5B5A60',
+      backgroundColor :'#DDE0DD',
       height: 500,
     },
-  
     overlap: {
       position:'relative',
       bottom: 40,
       left: 4,
-      backgroundColor: '#E7EBEF',
+      backgroundColor: '#98BBD8',
       /* border: 2px solid #5B5A60,
       border-radius: 10px, */
-      marginRight: 150,
+      marginRight: 100,
       marginLeft: 30,
       padding: 20,
       display: 'flex',
       flexDirection: 'column',
       zIndex: 1000,
     },
-  
-    block3: {
-      position: 'relative',
-      bottom: -160,
-      width: 400, 
-      height: 200
-    },
-  
     text: {
       position: 'relative',
       top: 100,
       paddingLeft: 20,
     },
-
-    login : {
-      display: 'flex',
-      justifyContent: 'center',
-      backgroundColor: '#E7EBEF'
-    },
     listItems: {
-      color: 'black',
+      color: '#404343',
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -211,20 +194,23 @@ const styles = StyleSheet.create({
       paddingRight: 10,
       paddingLeft: 10
     },
-    hidden: {
-      display: 'none',
-      /* padding-top: 10vh; */
-      /* margin-bottom: 10vh */
-      marginBottom: -15,
-      padding: 2,
-      margin: 2,
-      backgroundColor: '#E7EBEF',
-    },
-
-    horizontal: {
+    listText: {
+      color: '#00050a',
+      fontSize: 16,
+      // fontWeight: 'bold',
       display: 'flex',
       flexDirection: 'row',
-      paddingLeft: 180,
-    }
+      justifyContent: 'space-between',
+      paddingRight: 10,
+      paddingLeft: 10
+    },
+    buttons: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      position: 'relative',
+      top: 150,
+      color: '#404343',
+    },
   });
   

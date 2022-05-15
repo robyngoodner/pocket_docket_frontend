@@ -23,15 +23,15 @@ const HomeScreenStack = ({ navigation }) => {
                 name="HomeScreen"
                 component={HomeScreen}
                 options={{
-                    title: "sQuaRe change",
+                    title: "Pocket Docket",
                     headerLeft: () => (
                         <NavigationsDrawerHeader
                         navigationProps={navigation} />
                     ),
                     headerStyle: {
-                    backgroundColor: '#E7EBEF', //Set Header color
+                    backgroundColor: '#DDE0DD', //Set Header color
                     },
-                    headerTintColor: 'black', //Set Header text color
+                    headerTintColor: '#00050a', //Set Header text color
                     headerTitleStyle: {
                         fontWeight: 'bold', //Set Header text style
                     },
@@ -51,9 +51,9 @@ const SettingScreenStack = ({ navigation }) => {
                 <NavigationsDrawerHeader navigationProps={navigation} />
             ),
             headerStyle: {
-                backgroundColor: '#307ecc', //Set Header color
+                backgroundColor: '#DDE0DD', //Set Header color
             },
-            headerTintColor: '#fff', //Set Header text color
+            headerTintColor: '#00050a', //Set Header text color
             headerTitleStyle: {
                 fontWeight: 'bold', //Set Header text style
             },
@@ -78,9 +78,9 @@ const NewListScreenStack = ({ navigation }) => {
                 <NavigationsDrawerHeader navigationProps={navigation} />
             ),
             headerStyle: {
-                backgroundColor: '#307ecc', //Set Header color
+                backgroundColor: '#DDE0DD', //Set Header color
             },
-            headerTintColor: '#fff', //Set Header text color
+            headerTintColor: '#00050a', //Set Header text color
             headerTitleStyle: {
                 fontWeight: 'bold', //Set Header text style
             },
@@ -105,9 +105,9 @@ const AllListsScreenStack = ({ navigation }) => {
                 <NavigationsDrawerHeader navigationProps={navigation} />
             ),
             headerStyle: {
-                backgroundColor: '#307ecc', //Set Header color
+                backgroundColor: '#DDE0DD', //Set Header color
             },
-            headerTintColor: '#fff', //Set Header text color
+            headerTintColor: '#00050a', //Set Header text color
             headerTitleStyle: {
                 fontWeight: 'bold', //Set Header text style
             },
@@ -132,9 +132,9 @@ const ListDetailScreenStack = ({ navigation }) => {
                 <NavigationsDrawerHeader navigationProps={navigation} />
             ),
             headerStyle: {
-                backgroundColor: '#307ecc', //Set Header color
+                backgroundColor: '#DDE0DD', //Set Header color
             },
-            headerTintColor: '#fff', //Set Header text color
+            headerTintColor: '#00050a', //Set Header text color
             headerTitleStyle: {
                 fontWeight: 'bold', //Set Header text style
             },
@@ -143,7 +143,7 @@ const ListDetailScreenStack = ({ navigation }) => {
                 name="List Detail Screen"
                 component={ListDetailScreen}
                 options={{
-                    title: "List Details",
+                    title: "To-do list",
                 }}
             />
         </Stack.Navigator>
@@ -159,9 +159,9 @@ const EditListDetailScreenStack = ({ navigation }) => {
                 <NavigationsDrawerHeader navigationProps={navigation} />
             ),
             headerStyle: {
-                backgroundColor: '#307ecc', //Set Header color
+                backgroundColor: '#DDE0DD', //Set Header color
             },
-            headerTintColor: '#fff', //Set Header text color
+            headerTintColor: '#00050a', //Set Header text color
             headerTitleStyle: {
                 fontWeight: 'bold', //Set Header text style
             },
@@ -186,9 +186,9 @@ const EditItemScreenStack = ({ navigation }) => {
                 <NavigationsDrawerHeader navigationProps={navigation} />
             ),
             headerStyle: {
-                backgroundColor: '#307ecc', //Set Header color
+                backgroundColor: '#DDE0DD', //Set Header color
             },
-            headerTintColor: '#fff', //Set Header text color
+            headerTintColor: '#00050a', //Set Header text color
             headerTitleStyle: {
                 fontWeight: 'bold', //Set Header text style
             },
