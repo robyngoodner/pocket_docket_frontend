@@ -14,11 +14,12 @@ import Loader from '../Components/Loader';
 
  
 
-export default function EditItem ({ navigation, route }) {
+export default function EditItem ({ navigation, props }) {
+  //console.log("element",props)
   const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
-  const { body, id } = route.params
+  const { body, id } = props;
   const [list, setList] = useState({})
   const [itemBody, setItemBody] = useState('');
   
@@ -30,7 +31,6 @@ export default function EditItem ({ navigation, route }) {
     const user = await AsyncStorage.getItem('user')
     .then(user => authservice.getProfile(user)) 
     .then(res => {
-      //console.log("getUserProfile2 res ",res.data)
       setUserId(res.data.id)
     })
   }
@@ -49,10 +49,7 @@ export default function EditItem ({ navigation, route }) {
     listService.getList(id)
     .then(res => {
       setLoading(false)
-      // console.log("get single list res.data: ", res.data)
       setList(res.data)
-      //console.log(list[0].title)
-      //console.log("this list's id? ",id)
     })
     .then(() => setLoading(false))
   }
@@ -64,15 +61,13 @@ export default function EditItem ({ navigation, route }) {
     itemService.getItems(id)
     .then(res => {
       setLoading(false)
-      //console.log("get items res.data: ", res.data)
-      setItems(res.data)
+      // setItems(res.data)
     })
     .then(() => setLoading(false))
   }
 
   const editItem = () => {
     setErrortext('');
-    //setLoading(true);
     if(!itemBody){
       setItemBody(body)
     }
@@ -80,16 +75,12 @@ export default function EditItem ({ navigation, route }) {
       id: id,
       body: itemBody,
     }
-    //console.log('update item object: ',item)
     itemService.updateItem(item.id, item)
     .then(res => {
       setLoading(false)
       console.log(res.data)
     })
   }
-
-  
-
   
   useEffect (() => {
     getUserProfile();
@@ -99,6 +90,7 @@ export default function EditItem ({ navigation, route }) {
   
   
   return (
+    <View>
     <SafeAreaView style={{flex: 1, backgroundColor: '#DDE0DD',}}>
       <ScrollView>
       <KeyboardAwareScrollView
@@ -119,7 +111,7 @@ export default function EditItem ({ navigation, route }) {
                   onChangeText={(body) =>
                     setItemBody(body)
                   }
-                  placeholder={body} //12345
+                 placeholder={body} //12345
                   placeholderTextColor="#3a84be"
                   keyboardType="default"
                   blurOnSubmit={false}
@@ -139,7 +131,7 @@ export default function EditItem ({ navigation, route }) {
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
                 onPress={() => {
-                  editItem(), 
+                  //editItem(), 
                   navigation.navigate('ListDetailScreenStack')}}
                 >
                 <Text style={styles.buttonTextStyle}>Submit changes</Text>
@@ -150,6 +142,7 @@ export default function EditItem ({ navigation, route }) {
   </KeyboardAwareScrollView>
   </ScrollView>
   </SafeAreaView>
+  </View>
   );
 }
 
@@ -160,7 +153,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-  
     home: {
       maxWidth: 400,
       backgroundColor :'#DDE0DD',

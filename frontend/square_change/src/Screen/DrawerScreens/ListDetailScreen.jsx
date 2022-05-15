@@ -12,6 +12,7 @@ import * as listService from '../../api/list.service';
 import * as authservice from '../../api/auth.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../Components/Loader';
+import EditItem from '../Components/EditItem'
 
  
 
@@ -28,11 +29,12 @@ export default function ListDetailScreen ({ navigation, route }) {
     const [SMSArray, setSMSArray] = useState([])
     const [SMSBody, setSMSBody] = useState('')
     const [showEditList, setShowEditList] = useState(false)
-    
+    const [isShowing, setIsShowing] = useState('none')
+    const [isShowingKey, setIsShowingKey] = useState('')
+     
     const isFocused = useIsFocused()
 
     //console.log("list detail screen line 31 id: ",id)
-
 
   async function getUserProfile() {
     const user = await AsyncStorage.getItem('user')
@@ -142,15 +144,79 @@ export default function ListDetailScreen ({ navigation, route }) {
     })
   }
 
+  // const listItems = () => {
+  //   //console.log("getting to listItems")
+  //   if (list[0]) {
+  //   return list[0].items.map((element, key) => {
+  //     //console.log("list item",element)
+  //     return (
+  //       <View style={styles.listItems} key={key}>
+  //         <TouchableOpacity
+  //           onPress = {() =>navigation.navigate('EditItemScreenStack', {screen: 'Edit Item Screen', params: element})}>
+  //           <Text key={key}>
+  //             {element.body}
+  //           </Text>
+  //         </TouchableOpacity>
+  //         <BouncyCheckbox 
+  //           isChecked = {element.complete}
+  //           onPress={(isChecked) => {updateItemCompletion(element)}}
+  //           fillColor="#3a84be" 
+  //           size={20}
+  //           />
+  //       </View>
+  //     )
+  //   })
+  // } else {
+  //   return (
+  //     <View style={styles.listItems}>
+  //       <Text>This list is empty! Add some to-do items.</Text>
+  //     </View>
+  //   )}
+  // }
+
   const listItems = () => {
     //console.log("getting to listItems")
     if (list[0]) {
     return list[0].items.map((element, key) => {
       //console.log("list item",element)
-      return (
+      if (isShowingKey === key){
+        return (
+          <View style={styles.listItems} key={key}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsShowingKey(key);
+                if (isShowing === "none") {
+                  setIsShowing("flex")}
+                else if (isShowing === "flex") {
+                  setIsShowing("none")
+                }
+              }}>
+              <Text key={key}>
+                {element.body}
+              </Text>
+              <View style={{display: isShowing}}>
+                <EditItem props={element}/>
+              </View>
+            </TouchableOpacity>
+            <BouncyCheckbox 
+              isChecked = {element.complete}
+              onPress={(isChecked) => {updateItemCompletion(element)}}
+              fillColor="#3a84be" 
+              size={20}
+              />
+          </View>
+        )
+      } else  { return (
         <View style={styles.listItems} key={key}>
           <TouchableOpacity
-            onPress = {() =>navigation.navigate('EditItemScreenStack', {screen: 'Edit Item Screen', params: element})}>
+            onPress={() => {
+              setIsShowingKey(key);
+              if (isShowing === "none") {
+                setIsShowing("flex")}
+              else if (isShowing === "flex") {
+                setIsShowing("none")
+              }
+            }}>
             <Text key={key}>
               {element.body}
             </Text>
@@ -163,6 +229,8 @@ export default function ListDetailScreen ({ navigation, route }) {
             />
         </View>
       )
+
+      }
     })
   } else {
     return (
@@ -413,6 +481,9 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: '#dadae8',
     backgroundColor: '#E7EBEF'
+  },
+  hidden: {
+    display: 'none'
   },
   });
   
