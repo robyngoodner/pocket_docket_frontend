@@ -2,6 +2,7 @@ import React,{useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert } from 'react-native';
 import { navigation, useIsFocused } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as authservice from '../../api/auth.service';
 import * as listService from '../../api/list.service'
@@ -117,20 +118,26 @@ export default function HomeScreen ({ navigation }) {
   }
   
   return (
+    <KeyboardAwareScrollView
+            keyboardShouldPersistTaps="handled"
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            scrollEnabled={true}
+            contentContainerStyle={{
+              flex: 1,
+              justifyContent: 'center',
+              alignContent: 'center',
+            }}>
     <SafeAreaView style={{flex: 1}}>
       {/* <View style={{flex: 1, padding: 16}}> */}
         <View style={styles.container}>
-          <Image
-          source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
+        <Image
+          source={require('../../assets/imgs/Center_todo.jpg')} 
             style={{width: 400, height: 180}}
         />
         <View style={styles.home}>
           <View style={styles.overlap}>
             
-            <Button
-              title="About"
-              onPress={() => { 
-                navigation.navigate('About')}} />
+            <Text>All Lists</Text>
           </View>
           <Text>{userProfile.firstName}'s To Do Lists: </Text>
           <View>{list()}</View>
@@ -149,6 +156,7 @@ export default function HomeScreen ({ navigation }) {
       </View>
     {/* </View> */}
   </SafeAreaView>
+  </KeyboardAwareScrollView>
   );
 }
 
@@ -162,7 +170,7 @@ const styles = StyleSheet.create({
   
     home: {
       width: 375,
-      backgroundColor :'#5B5A60',
+      backgroundColor :'#DDE0DD',
       height: 500,
     },
   
@@ -170,7 +178,7 @@ const styles = StyleSheet.create({
       position:'relative',
       bottom: 40,
       left: 4,
-      backgroundColor: '#E7EBEF',
+      backgroundColor: '#98BBD8',
       /* border: 2px solid #5B5A60,
       border-radius: 10px, */
       marginRight: 150,

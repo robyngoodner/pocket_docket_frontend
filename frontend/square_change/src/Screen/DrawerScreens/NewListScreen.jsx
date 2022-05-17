@@ -57,15 +57,18 @@ export default function NewListScreen ({ navigation }) {
   
   
   return (
+    <SafeAreaView style={{flex: 1}}>
     <View style={styles.container}>
-            <View style={styles.home}>
-    <SafeAreaView style={{flex: 1, padding: 20}}>
-      {/* <View style={{flex: 1, padding: 16}}> */}
-        <View style={styles.container}>
-          <Image
-          source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
+    <Image
+          source={require('../../assets/imgs/Center_todo.jpg')} 
             style={{width: 400, height: 180}}
         />
+            <View style={styles.home}>
+            <View style={styles.overlap}>
+            <Text style={{fontSize: 18,color: '#00050a',}}>Create a new to-do list </Text>
+          </View>
+      {/* <View style={{flex: 1, padding: 16}}> */}
+        <View style={styles.container}>
         <View style={styles.mainBody}>
         <Loader loading={loading} />
         <ScrollView
@@ -133,23 +136,24 @@ export default function NewListScreen ({ navigation }) {
         </View>
         <StatusBar style="auto" />
     
+
+  </View>
+  </View>
   </SafeAreaView>
-  </View>
-  </View>
   );
 }
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#DDE0DD',
       alignItems: 'center',
       justifyContent: 'center',
     },
   
     home: {
       width: 375,
-      backgroundColor :'#5B5A60',
+      backgroundColor :'#DDE0DD',
       height: 500,
     },
   
@@ -157,7 +161,7 @@ const styles = StyleSheet.create({
       position:'relative',
       bottom: 40,
       left: 4,
-      backgroundColor: '#E7EBEF',
+      backgroundColor: '#98BBD8',
       /* border: 2px solid #5B5A60,
       border-radius: 10px, */
       marginRight: 150,
@@ -184,7 +188,7 @@ const styles = StyleSheet.create({
     login : {
       display: 'flex',
       justifyContent: 'center',
-      backgroundColor: '#E7EBEF'
+      backgroundColor: '#DDE0DD'
     },
 
     hidden: {
@@ -197,11 +201,11 @@ const styles = StyleSheet.create({
       backgroundColor: '#E7EBEF',
     },
 
-    horizontal: {
-      display: 'flex',
-      flexDirection: 'row',
-      paddingLeft: 180,
-    },
+    // horizontal: {
+    //   display: 'flex',
+    //   flexDirection: 'row',
+    //   paddingLeft: 180,
+    // },
     // mainBody: {
     //     flex: 1,
     //     justifyContent: 'center',
@@ -217,6 +221,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         margin: 10,
         width: 200,
+        color: '#5B5A60',
       },
       buttonStyle: {
         backgroundColor: '#E7EBEF',
@@ -238,12 +243,14 @@ const styles = StyleSheet.create({
       },
       inputStyle: {
         flex: 1,
-        color: 'white',
+        color: '#0f3c68',
         paddingLeft: 15,
         paddingRight: 15,
         borderWidth: 1,
         borderRadius: 30,
         borderColor: '#dadae8',
+        backgroundColor: '#E7EBEF',
+        height: 40,
       },
   });
   
