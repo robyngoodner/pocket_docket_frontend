@@ -1,7 +1,8 @@
 import React,{useState, useEffect, createRef, useCallback} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert, TextInput, ScrollView,Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { navigation, useIsFocused } from '@react-navigation/native';
 import SendSMS from 'react-native-sms';
 import * as itemService from '../../api/item.service';
@@ -154,33 +155,32 @@ export default function ListDetailScreen ({ navigation, route }) {
   
   
   return (
-    <View style={styles.container}>
-            <View style={styles.home}>
-    <SafeAreaView style={{flex: 1, padding: 20}}>
-        <View style={styles.container}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#DDE0DD',}}>
+      <ScrollView>
+      <KeyboardAwareScrollView
+            keyboardShouldPersistTaps="handled"
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            scrollEnabled={true}
+            contentContainerStyle={{
+              flex: 1,
+              justifyContent: 'center',
+              alignContent: 'center',
+            }}>
           <Image
-          source={require('../../assets/imgs/shutterstock_739769911.jpg')} 
+            source={require('../../assets/imgs/Top_todo.jpg')} 
             style={{width: 400, height: 180}}
-        />
-        <View style={styles.mainBody}>
-        <Loader loading={loading} />
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{
-            flex: 1,
-            justifyContent: 'center',
-            alignContent: 'center',
-          }}>
-          <View style={styles.login}>
-            <KeyboardAvoidingView enabled>
+          />
+          <View style={styles.home}>
+          <Loader loading={loading} />
+          <View style={styles.SectionStyle}>
               <View style={styles.InputStyle}>
                 <TextInput
-                  style={styles.inputStyle}
+                  style={styles.textInputStyle}
                   onChangeText={(title) =>
                     setListTitle(title)
                   }
                   placeholder={title} //12345
-                  placeholderTextColor="#8b9cb5"
+                  placeholderTextColor="#3a84be"
                   keyboardType="default"
                   blurOnSubmit={false}
                   underlineColorAndroid="#f000"
@@ -193,12 +193,12 @@ export default function ListDetailScreen ({ navigation, route }) {
                   defaultValue={title}
                 />
                 <TextInput
-                  style={styles.inputStyle}
+                  style={styles.textInputStyle}
                   onChangeText={(description) =>
                     setListDescription(description)
                   }
                   placeholder={description} //12345
-                  placeholderTextColor="#8b9cb5"
+                  placeholderTextColor="#3a84be"
                   keyboardType="default"
                   onSubmitEditing={Keyboard.dismiss}
                   blurOnSubmit={false}
@@ -223,153 +223,98 @@ export default function ListDetailScreen ({ navigation, route }) {
                 >
                 <Text style={styles.buttonTextStyle}>Submit changes</Text>
               </TouchableOpacity> 
+              </View>
               <Button
                 title="Home"
                 onPress={() => {navigation.navigate("HomeScreenStack")}}
               />            
-              </KeyboardAvoidingView>
-              </View>
-            </ScrollView>
+              <StatusBar style="auto" />
+              <Image
+                source={require('../../assets/imgs/Bottom_todo_list_only.jpg')} 
+                style={{width: 400, height: 130}}
+              />
             </View>
-          <Image style={styles.block3}
-            source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
-          />
-        </View>
-        <StatusBar style="auto" />
-    
+            <StatusBar style="auto" />
+        </KeyboardAwareScrollView>
+      </ScrollView>
   </SafeAreaView>
-  </View>
-  </View>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  
-    home: {
-      width: 375,
-      backgroundColor :'#5B5A60',
-      height: 500,
-    },
-  
-    overlap: {
-      position:'relative',
-      bottom: 40,
-      left: 4,
-      backgroundColor: '#E7EBEF',
-      /* border: 2px solid #5B5A60,
-      border-radius: 10px, */
-      marginRight: 150,
-      marginLeft: 30,
-      padding: 20,
-      display: 'flex',
-      flexDirection: 'column',
-      zIndex: 1000,
-    },
-
-    listItems: {
-      color: 'black',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingBottom: 10,
-      paddingRight: 20,
-      paddingLeft: 20
-    },
-  
-    block3: {
-      position: 'relative',
-      bottom: -160,
-      width: 400, 
-      height: 200
-    },
-  
-    text: {
-      position: 'relative',
-      top: 100,
-      paddingLeft: 20,
-    },
-
-    login : {
-      display: 'flex',
-      justifyContent: 'center',
-      backgroundColor: '#E7EBEF'
-    },
-
-    hidden: {
-      display: 'none',
-      /* padding-top: 10vh; */
-      /* margin-bottom: 10vh */
-      marginBottom: -15,
-      padding: 2,
-      margin: 2,
-      backgroundColor: '#E7EBEF',
-    },
-
-    horizontal: {
-      display: 'flex',
-      flexDirection: 'column',
-      paddingLeft: 180,
-    },
-    // mainBody: {
-    //     flex: 1,
-    //     justifyContent: 'center',
-    //     backgroundColor: '#5B5A60',
-    //     alignContent: 'center',
-    //     paddingTop: 48,
-    //   },
-      SectionStyle: {
-        flexDirection: 'column',
-        // height: 100,
-        marginTop: 20,
-        marginLeft: 10,
-        marginRight: 10,
-        margin: 10,
-        width: 300,
-        color: 'black',
-      },
-      InputStyle: {
-        flexDirection: 'column',
-        height: 40,
-        marginTop: 20,
-        marginLeft: 10,
-        marginRight: 10,
-        margin: 10,
-        width: 300,
-        color: 'black',
-      },
-      buttonStyle: {
-        backgroundColor: '#E7EBEF',
-        borderWidth: 0,
-        color: '#5B5A60',
-        borderColor: '#7DE24E',
-        height: 40,
-        alignItems: 'center',
-        borderRadius: 30,
-        marginLeft: 35,
-        marginRight: 35,
-        marginTop: 20,
-        marginBottom: 25,
-      },
-      buttonTextStyle: {
-        color: '#5B5A60',
-        paddingVertical: 10,
-        fontSize: 16,
-      },
-      inputStyle: {
-        flex: 1,
-        color: 'white',
-        paddingLeft: 15,
-        paddingRight: 15,
-        height: 50,
-        borderWidth: 1,
-        borderRadius: 30,
-        borderColor: '#dadae8',
-      },
-  });
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  home: {
+    maxWidth: 400,
+    backgroundColor :'#DDE0DD',
+    position: 'relative',
+    bottom: 0,
+    paddingBottom: 40,
+  },
+  SectionStyle: {
+    maxWidth: '100%',
+    flexDirection: 'column',
+    marginTop: 15,
+    marginLeft: 10,
+    marginRight: 10,
+    margin: 10,
+    paddingTop: 40,
+    paddingBottom: 40,
+  },
+  listItems: {
+    color: '#2D608F',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+    paddingRight: 20,
+    paddingLeft: 20
+  },
+  InputStyle: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: 60,
+    marginTop: 30,
+    marginLeft: 30,
+    marginRight: 30,
+    marginBottom: 10,
+    // paddingTop: 10,
+    width: 300,
+    color: 'black',
+  },
+  buttonStyle: {
+    backgroundColor: '#E7EBEF',
+    borderWidth: 0,
+    color: '#5B5A60',
+    borderColor: '#7DE24E',
+    height: 40,
+    alignItems: 'center',
+    borderRadius: 30,
+    marginLeft: 65,
+    marginRight: 65,
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  buttonTextStyle: {
+    color: '#1c5d8e',
+    paddingVertical: 10,
+    fontSize: 16,
+  },
+  textInputStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    color: '#0f3c68',
+    paddingLeft: 15,
+    paddingRight: 15,
+    // paddingTop: 10,
+    // height: 100,
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#dadae8',
+    backgroundColor: '#E7EBEF'
+  },
+});

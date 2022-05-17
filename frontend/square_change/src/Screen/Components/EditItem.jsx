@@ -164,6 +164,8 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       marginLeft: 10,
       marginRight: 10,
+      paddingTop: 40,
+      paddingBottom: 40,
     },
     listItems: {
       color: '#2D608F',

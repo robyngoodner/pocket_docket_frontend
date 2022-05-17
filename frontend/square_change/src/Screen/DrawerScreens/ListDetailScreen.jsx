@@ -129,94 +129,38 @@ export default function ListDetailScreen ({ navigation, route }) {
   async function updateItemCompletion (oldItem) {
     setErrortext('');
     //setLoading(true);
-    if (oldItem.complete === false) setCompletion(true)
-    else if (oldItem.complete === true) setCompletion(false);
-    const item = {
-      id: oldItem.id,
-      body: oldItem.body,
-      complete: completion
+    let item={};
+    if (oldItem.complete === false) {
+      item = {
+        id: oldItem.id,
+        body: oldItem.body,
+        complete: true
+      }
+    }
+    else if (oldItem.complete === true) {
+      item = {
+        id: oldItem.id,
+        body: oldItem.body,
+        complete: false
+      }
     }
     //console.log('update item object: ',item)
     itemService.updateItem(item.id, item)
     .then(res => {
       setLoading(false)
-      //console.log(res.data)
+      console.log("checked?", res.data)
     })
   }
-
-  // const listItems = () => {
-  //   //console.log("getting to listItems")
-  //   if (list[0]) {
-  //   return list[0].items.map((element, key) => {
-  //     //console.log("list item",element)
-  //     return (
-  //       <View style={styles.listItems} key={key}>
-  //         <TouchableOpacity
-  //           onPress = {() =>navigation.navigate('EditItemScreenStack', {screen: 'Edit Item Screen', params: element})}>
-  //           <Text key={key}>
-  //             {element.body}
-  //           </Text>
-  //         </TouchableOpacity>
-  //         <BouncyCheckbox 
-  //           isChecked = {element.complete}
-  //           onPress={(isChecked) => {updateItemCompletion(element)}}
-  //           fillColor="#3a84be" 
-  //           size={20}
-  //           />
-  //       </View>
-  //     )
-  //   })
-  // } else {
-  //   return (
-  //     <View style={styles.listItems}>
-  //       <Text>This list is empty! Add some to-do items.</Text>
-  //     </View>
-  //   )}
-  // }
 
   const listItems = () => {
     //console.log("getting to listItems")
     if (list[0]) {
     return list[0].items.map((element, key) => {
       //console.log("list item",element)
-      if (isShowingKey === key){
-        return (
-          <View style={styles.listItems} key={key}>
-            <TouchableOpacity
-              onPress={() => {
-                setIsShowingKey(key);
-                if (isShowing === "none") {
-                  setIsShowing("flex")}
-                else if (isShowing === "flex") {
-                  setIsShowing("none")
-                }
-              }}>
-              <Text key={key}>
-                {element.body}
-              </Text>
-              <View style={{display: isShowing}}>
-                <EditItem props={element}/>
-              </View>
-            </TouchableOpacity>
-            <BouncyCheckbox 
-              isChecked = {element.complete}
-              onPress={(isChecked) => {updateItemCompletion(element)}}
-              fillColor="#3a84be" 
-              size={20}
-              />
-          </View>
-        )
-      } else  { return (
+      return (
         <View style={styles.listItems} key={key}>
           <TouchableOpacity
-            onPress={() => {
-              setIsShowingKey(key);
-              if (isShowing === "none") {
-                setIsShowing("flex")}
-              else if (isShowing === "flex") {
-                setIsShowing("none")
-              }
-            }}>
+            onPress = {() =>navigation.navigate('EditItemScreenStack', {screen: 'Edit Item Screen', params: element})}>
             <Text key={key}>
               {element.body}
             </Text>
@@ -229,8 +173,6 @@ export default function ListDetailScreen ({ navigation, route }) {
             />
         </View>
       )
-
-      }
     })
   } else {
     return (
@@ -240,9 +182,77 @@ export default function ListDetailScreen ({ navigation, route }) {
     )}
   }
 
+  // const listItems = () => {
+  //   //console.log("getting to listItems")
+  //   if (list[0]) {
+  //   return list[0].items.map((element, key) => {
+  //     //console.log("list item",element)
+  //     if (isShowingKey === key){
+  //       return (
+  //         <View style={styles.listItems} key={key}>
+  //           <TouchableOpacity
+  //             onPress={() => {
+  //               setIsShowingKey(key);
+  //               if (isShowing === "none") {
+  //                 setIsShowing("flex")}
+  //               else if (isShowing === "flex") {
+  //                 setIsShowing("none")
+  //               }
+  //             }}>
+  //             <Text key={key}>
+  //               {element.body}
+  //             </Text>
+  //             <View style={{display: isShowing}}>
+  //               <EditItem props={element}/>
+  //             </View>
+  //           </TouchableOpacity>
+  //           <BouncyCheckbox 
+  //             isChecked = {element.complete}
+  //             onPress={(isChecked) => {updateItemCompletion(element)}}
+  //             fillColor="#3a84be" 
+  //             size={20}
+  //             />
+  //         </View>
+  //       )
+  //     } else  { return (
+  //       <View style={styles.listItems} key={key}>
+  //         <TouchableOpacity
+  //           onPress={() => {
+  //             setIsShowingKey(key);
+  //             if (isShowing === "none") {
+  //               setIsShowing("flex")}
+  //             else if (isShowing === "flex") {
+  //               setIsShowing("none")
+  //             }
+  //           }}>
+  //           <Text key={key}>
+  //             {element.body}
+  //           </Text>
+  //         </TouchableOpacity>
+  //         <BouncyCheckbox 
+  //           isChecked = {element.complete}
+  //           onPress={(isChecked) => {updateItemCompletion(element)}}
+  //           fillColor="#3a84be" 
+  //           size={20}
+  //           />
+  //       </View>
+  //     )
+
+  //     }
+  //   })
+  // } else {
+  //   return (
+  //     <View style={styles.listItems}>
+  //       <Text>This list is empty! Add some to-do items.</Text>
+  //     </View>
+  //   )}
+  // }
+
   const sendSMS = () => {
-    items.map((element) => {
-      if(element.complete === false) {
+  
+    if(list){
+    list[0].items.map((element) => {
+      if(element.complete == false) {
         SMSArray.push(element.body)
       }
     })
@@ -253,6 +263,7 @@ export default function ListDetailScreen ({ navigation, route }) {
     const operator = Platform.select({ios: '&', android: '?'});
     Linking.openURL(`sms:${operator}body=${SMSBody}`);
     setSMSArray([])
+    }
   }
 
   

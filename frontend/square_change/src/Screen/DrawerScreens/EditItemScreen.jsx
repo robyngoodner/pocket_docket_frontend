@@ -21,6 +21,7 @@ export default function EditItemScreen ({ navigation, route }) {
   const { body, id } = route.params
   const [list, setList] = useState({})
   const [itemBody, setItemBody] = useState('');
+  const [items, setItems] = useState([])
   
   
   const isFocused = useIsFocused()
