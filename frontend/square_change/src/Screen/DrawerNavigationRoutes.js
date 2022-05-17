@@ -134,7 +134,7 @@ const ListDetailScreenStack = ({ navigation }) => {
             headerStyle: {
                 backgroundColor: '#DDE0DD', //Set Header color
             },
-            headerTintColor: '#00050a', //Set Header text color
+            headerTintColor: '#DDE0DD', //Set Header text color
             headerTitleStyle: {
                 fontWeight: 'bold', //Set Header text style
             },
@@ -150,72 +150,72 @@ const ListDetailScreenStack = ({ navigation }) => {
     );
 };
 
-const EditListDetailScreenStack = ({ navigation }) => {
-    return (
-        <Stack.Navigator
-        initialRouteName="SettingScreen"
-        screenOptions={{
-            headerLeft:() => (
-                <NavigationsDrawerHeader navigationProps={navigation} />
-            ),
-            headerStyle: {
-                backgroundColor: '#DDE0DD', //Set Header color
-            },
-            headerTintColor: '#00050a', //Set Header text color
-            headerTitleStyle: {
-                fontWeight: 'bold', //Set Header text style
-            },
-        }}>
-            <Stack.Screen
-                name="Edit List Detail Screen"
-                component={EditListDetailScreen}
-                options={{
-                    title: "Edit List Details",
-                }}
-            />
-        </Stack.Navigator>
-    );
-};
+// const EditListDetailScreenStack = ({ navigation }) => {
+//     return (
+//         <Stack.Navigator
+//         initialRouteName="SettingScreen"
+//         screenOptions={{
+//             headerLeft:() => (
+//                 <NavigationsDrawerHeader navigationProps={navigation} />
+//             ),
+//             headerStyle: {
+//                 backgroundColor: '#DDE0DD', //Set Header color
+//             },
+//             headerTintColor: '#DDE0DD', //Set Header text color
+//             headerTitleStyle: {
+//                 fontWeight: 'bold', //Set Header text style
+//             },
+//         }}>
+//             <Stack.Screen
+//                 name="Edit List Detail Screen"
+//                 component={EditListDetailScreen}
+//                 options={{
+//                     title: "Edit List Details",
+//                 }}
+//             />
+//         </Stack.Navigator>
+//     );
+// };
 
-const EditItemScreenStack = ({ navigation }) => {
-    return (
-        <Stack.Navigator
-        initialRouteName="SettingScreen"
-        screenOptions={{
-            headerLeft:() => (
-                <NavigationsDrawerHeader navigationProps={navigation} />
-            ),
-            headerStyle: {
-                backgroundColor: '#DDE0DD', //Set Header color
-            },
-            headerTintColor: '#00050a', //Set Header text color
-            headerTitleStyle: {
-                fontWeight: 'bold', //Set Header text style
-            },
-        }}>
-            <Stack.Screen
-                name="Edit Item Screen"
-                component={EditItemScreen}
-                options={{
-                    title: "Edit Item",
-                }}
-            />
-        </Stack.Navigator>
-    );
-};
+// const EditItemScreenStack = ({ navigation }) => {
+//     return (
+//         <Stack.Navigator
+//         initialRouteName="SettingScreen"
+//         screenOptions={{
+//             headerLeft:() => (
+//                 <NavigationsDrawerHeader navigationProps={navigation} />
+//             ),
+//             headerStyle: {
+//                 backgroundColor: '#DDE0DD', //Set Header color
+//             },
+//             headerTintColor: '#DDE0DD', //Set Header text color
+//             headerTitleStyle: {
+//                 fontWeight: 'bold', //Set Header text style
+//             },
+//         }}>
+//             <Stack.Screen
+//                 name="Edit Item Screen"
+//                 component={EditItemScreen}
+//                 options={{
+//                     title: "Edit Item",
+//                 }}
+//             />
+//         </Stack.Navigator>
+//     );
+// };
 
 const DrawerNavigatorRoutes = (props) => {
     return (
       <Drawer.Navigator
-        drawerContentOptions={{
+        screenOptions={{
           activeTintColor: '#cee1f2',
           color: '#cee1f2',
           itemStyle: {marginVertical: 5, color: 'white'},
           labelStyle: {
             color: '#d8d8d8',
           },
+          headerShown: false
         }}
-        screenOptions={{headerShown: false}}
         drawerContent={CustomSideBarMenu}>
         <Drawer.Screen
           name="HomeScreenStack"
@@ -237,7 +237,7 @@ const DrawerNavigatorRoutes = (props) => {
           options={{drawerLabel: 'List Detail Screen'}}
           component={ListDetailScreenStack}
         />
-        <Drawer.Screen
+        {/* <Drawer.Screen
           name="EditListDetailScreenStack"
           options={{drawerLabel: 'Edit List Detail Screen'}}
           component={EditListDetailScreenStack}
@@ -246,7 +246,7 @@ const DrawerNavigatorRoutes = (props) => {
           name="EditItemScreenStack"
           options={{drawerLabel: 'Edit Item Screen'}}
           component={EditItemScreenStack}
-        />
+        /> */}
         {/* <Drawer.Screen
           name="SettingScreenStack"
           options={{drawerLabel: 'Setting Screen'}}

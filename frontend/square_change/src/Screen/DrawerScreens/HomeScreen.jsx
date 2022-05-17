@@ -1,16 +1,18 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect, createRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, Button, SafeAreaView, Alert, ScrollView, KeyboardAvoidingView, TextInput, Keyboard} from 'react-native';
 import { navigation, useIsFocused } from '@react-navigation/native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as authservice from '../../api/auth.service';
 import * as listService from '../../api/list.service'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../Components/Loader';
  
 
 export default function HomeScreen ({ navigation }) {
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errortext, setErrortext] = useState('');
   const [userName, setUserName] = useState('');
   const [userStatus, setUserStatus] = useState('');
   const [userProfile, setUserProfile] = useState({})
@@ -18,8 +20,12 @@ export default function HomeScreen ({ navigation }) {
   const [item, setItem] = useState('');
   const [isChecked, setIsChecked] = useState(false)
   const [completion, setCompletion] = useState(false)
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [showNewListComponent, setShowNewListComponent] = useState('none')
 
   const isFocused = useIsFocused();
+  const newDescriptionInputRef = createRef();
 
 
   async function getUserProfile() {
@@ -74,6 +80,122 @@ export default function HomeScreen ({ navigation }) {
       getUserProfile();
     })
   }
+
+//create new list
+async function createNewList(e) {
+  e.preventDefault();
+  setErrortext('');
+  if(!title) {
+    alert('Please enter a title for your list');
+    return;
+  }
+  setLoading(true);
+  let list = {
+      title: title,
+      description: description,
+      user: userId
+  }
+
+  const user = await AsyncStorage.getItem('userId')
+  .then(user => listService.createList(user, list))
+  .then(res => {
+    setShowNewListComponent('none');
+    getUserProfile();
+    getList();
+    getItems();  
+    setLoading(false);
+    console.log("res.data from createnewList ", res.data)
+      
+  })
+
+}
+
+  function showNewList() {
+    setShowNewListComponent('flex')
+    return(
+      <View style={{display: showNewListComponent}}>
+      <View style={styles.container}>
+            <View style={styles.home}>
+    <SafeAreaView style={{flex: 1, padding: 20}}>
+      {/* <View style={{flex: 1, padding: 16}}> */}
+        <View style={styles.container}>
+        <View style={styles.mainBody}>
+        <Loader loading={loading} />
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            alignContent: 'center',
+          }}>
+          <View style={styles.login}>
+            <KeyboardAvoidingView enabled>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(title) =>
+                    setTitle(title)
+                  }
+                  placeholder="Enter a list title"
+                  placeholderTextColor="#8b9cb5"
+                  autoCapitalize="none"
+                  keyboardType="default"
+                  returnKeyType="next"
+                  onSubmitEditing={() =>
+                    newDescriptionInputRef.current &&
+                    newDescriptionInputRef.current.focus()
+                  }
+                  underlineColorAndroid="#f000"
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(description) =>
+                    setDescription(description)
+                  }
+                  placeholder="Describe your list!" //12345
+                  placeholderTextColor="#8b9cb5"
+                  keyboardType="default"
+                  ref={newDescriptionInputRef}
+                  onSubmitEditing={Keyboard.dismiss}
+                  blurOnSubmit={false}
+                  underlineColorAndroid="#f000"
+                  returnKeyType="next"
+                />
+              </View>
+              {errortext != '' ? (
+                <Text style={styles.errorTextStyle}>
+                  {errortext}
+                </Text>
+              ) : null}
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={() => {
+                  createNewList(),
+                  getUserProfile()}}>
+                <Text style={styles.buttonTextStyle}>Create List</Text>
+              </TouchableOpacity>
+              </KeyboardAvoidingView>
+              </View>
+            </ScrollView>
+            </View>
+          <Image style={styles.block3}
+            source={require('../../assets/imgs/shutterstock_1145004488.jpg')} 
+          />
+        </View>
+        <StatusBar style="auto" />
+    
+  </SafeAreaView>
+  </View>
+  </View>
+  </View>
+    )
+  
+  }
+
 
   useEffect (() => {
   getUserProfile();
@@ -134,6 +256,11 @@ export default function HomeScreen ({ navigation }) {
               color='#1c5d8e'
               onPress={() => { 
                 navigation.navigate('NewListScreenStack')}} />
+                {/* <Button
+                title="New list"
+                color='#1c5d8e'
+                onPress={() => { setShowNewListComponent('flex'),
+                showNewList()}} /> */}
             <Button
               title="All lists"
               color='#1c5d8e'

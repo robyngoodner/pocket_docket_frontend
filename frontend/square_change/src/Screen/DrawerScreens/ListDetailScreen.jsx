@@ -18,21 +18,28 @@ import EditItem from '../Components/EditItem'
 
 export default function ListDetailScreen ({ navigation, route }) {
     const [userId, setUserId] = useState();
+    const [newTitle, setNewTitle] = useState('');
+    const [newDescription, setNewDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [errortext, setErrortext] = useState('');
-    const { title, id, description } = route.params
+    const { title, id, description } = route.params;
+    const [listiD, setListId] = useState('');
     const [body, setBody] = useState('');
+    const [itemBody, setItemBody] = useState('');
     const [items, setItems ] = useState([]);
-    const [isChecked, setIsChecked] = useState(false)
-    const [completion, setCompletion] = useState(false)
-    const [list, setList] = useState({})
-    const [SMSArray, setSMSArray] = useState([])
-    const [SMSBody, setSMSBody] = useState('')
-    const [showEditList, setShowEditList] = useState(false)
-    const [isShowing, setIsShowing] = useState('none')
-    const [isShowingKey, setIsShowingKey] = useState('')
+    const [isChecked, setIsChecked] = useState(false);
+    const [completion, setCompletion] = useState(false);
+    const [list, setList] = useState({});
+    const [SMSArray, setSMSArray] = useState([]);
+    const [SMSBody, setSMSBody] = useState('');
+    const [showEditList, setShowEditList] = useState('none');
+    const [isShowing, setIsShowing] = useState('none');
+    const [isShowingKey, setIsShowingKey] = useState('');
+
      
     const isFocused = useIsFocused()
+    const descriptionRef = createRef();
+    
 
     //console.log("list detail screen line 31 id: ",id)
 
@@ -44,7 +51,6 @@ export default function ListDetailScreen ({ navigation, route }) {
       setUserId(res.data.id)
     })
   }
-
 
   
   const itemBodyRef = createRef();
@@ -152,34 +158,28 @@ export default function ListDetailScreen ({ navigation, route }) {
     })
   }
 
-  const listItems = () => {
-    //console.log("getting to listItems")
-    if (list[0]) {
-    return list[0].items.map((element, key) => {
-      //console.log("list item",element)
-      return (
-        <View style={styles.listItems} key={key}>
-          <TouchableOpacity
-            onPress = {() =>navigation.navigate('EditItemScreenStack', {screen: 'Edit Item Screen', params: element})}>
-            <Text key={key}>
-              {element.body}
-            </Text>
-          </TouchableOpacity>
-          <BouncyCheckbox 
-            isChecked = {element.complete}
-            onPress={(isChecked) => {updateItemCompletion(element)}}
-            fillColor="#3a84be" 
-            size={20}
-            />
-        </View>
-      )
+  async function updateItem (oldItem) {
+    setErrortext('');
+    if(!itemBody) {
+      alert('Please enter a list item');return;
+    }
+    //setLoading(true);
+    let item={
+      id: oldItem.id,
+      body: itemBody
+    };
+    
+    //console.log('update item object: ',item)
+    itemService.updateItem(item.id, item)
+    .then(res => {
+      setLoading(false)
+      console.log("updated?!", res.data)
+      getUserProfile();
+      getList();
+      getList();
+      getList();
+      getItems();
     })
-  } else {
-    return (
-      <View style={styles.listItems}>
-        <Text>This list is empty! Add some to-do items.</Text>
-      </View>
-    )}
   }
 
   // const listItems = () => {
@@ -187,44 +187,10 @@ export default function ListDetailScreen ({ navigation, route }) {
   //   if (list[0]) {
   //   return list[0].items.map((element, key) => {
   //     //console.log("list item",element)
-  //     if (isShowingKey === key){
-  //       return (
-  //         <View style={styles.listItems} key={key}>
-  //           <TouchableOpacity
-  //             onPress={() => {
-  //               setIsShowingKey(key);
-  //               if (isShowing === "none") {
-  //                 setIsShowing("flex")}
-  //               else if (isShowing === "flex") {
-  //                 setIsShowing("none")
-  //               }
-  //             }}>
-  //             <Text key={key}>
-  //               {element.body}
-  //             </Text>
-  //             <View style={{display: isShowing}}>
-  //               <EditItem props={element}/>
-  //             </View>
-  //           </TouchableOpacity>
-  //           <BouncyCheckbox 
-  //             isChecked = {element.complete}
-  //             onPress={(isChecked) => {updateItemCompletion(element)}}
-  //             fillColor="#3a84be" 
-  //             size={20}
-  //             />
-  //         </View>
-  //       )
-  //     } else  { return (
+  //     return (
   //       <View style={styles.listItems} key={key}>
   //         <TouchableOpacity
-  //           onPress={() => {
-  //             setIsShowingKey(key);
-  //             if (isShowing === "none") {
-  //               setIsShowing("flex")}
-  //             else if (isShowing === "flex") {
-  //               setIsShowing("none")
-  //             }
-  //           }}>
+  //           onPress = {() =>navigation.navigate('EditItemScreenStack', {screen: 'Edit Item Screen', params: element})}>
   //           <Text key={key}>
   //             {element.body}
   //           </Text>
@@ -237,8 +203,6 @@ export default function ListDetailScreen ({ navigation, route }) {
   //           />
   //       </View>
   //     )
-
-  //     }
   //   })
   // } else {
   //   return (
@@ -247,6 +211,127 @@ export default function ListDetailScreen ({ navigation, route }) {
   //     </View>
   //   )}
   // }
+
+  const listItems = () => {
+    //console.log("getting to listItems")
+    if (list[0]) {
+    return list[0].items.map((element, key) => {
+      //console.log("list item",element)
+      if (isShowingKey === key){
+        return (
+          <View style={styles.listItems} key={key}>
+            <TouchableOpacity
+              onPress={() => {
+                setItemBody(element.body)
+                setIsShowingKey(key);
+                if (isShowing === "none") {
+                  setIsShowing("flex")}
+                else if (isShowing === "flex") {
+                  setIsShowing("none")
+                }
+              }}>
+              <Text key={key}>
+                {element.body}
+              </Text>
+              <View style={{display: isShowing}}>
+              <View>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#DDE0DD',}}>
+      <ScrollView>
+      <KeyboardAwareScrollView
+            keyboardShouldPersistTaps="handled"
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            scrollEnabled={true}
+            contentContainerStyle={{
+              flex: 1,
+              justifyContent: 'center',
+              alignContent: 'center',
+            }}>
+        <View style={styles.home}>
+          <Loader loading={loading} />
+          <View style={styles.SectionStyle}>
+              <View style={styles.InputStyle2}>
+                <TextInput
+                  style={styles.textInputStyle}
+                  onChangeText={(body) =>
+                    setItemBody(body)
+                  }
+                  placeholder={body} //12345
+                  placeholderTextColor="#3a84be"
+                  keyboardType="default"
+                  blurOnSubmit={false}
+                  underlineColorAndroid="#f000"
+                  returnKeyType="next"
+                  onSubmitEditing={Keyboard.dismiss}
+                  clearButtonMode="always"
+                  defaultValue={element.body}
+                />
+              </View>
+              {errortext != '' ? (
+                <Text style={styles.errorTextStyle}>
+                  {errortext}
+                </Text>
+              ) : null}
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={() => {
+                  //editItem(), 
+                  updateItem(element)
+                  setIsShowing('none')
+                  }}
+                >
+                <Text style={styles.buttonTextStyle}>Submit changes</Text>
+              </TouchableOpacity>              
+              </View>
+            </View>
+            <StatusBar style="auto" />
+            </KeyboardAwareScrollView>
+            </ScrollView>
+            </SafeAreaView>
+            </View>
+              </View>
+            </TouchableOpacity>
+            <BouncyCheckbox 
+              isChecked = {element.complete}
+              onPress={(isChecked) => {updateItemCompletion(element)}}
+              fillColor="#3a84be" 
+              size={20}
+              />
+          </View>
+        )
+      } else  { return (
+        <View style={styles.listItems} key={key}>
+          <TouchableOpacity
+            onPress={() => {
+              setIsShowingKey(key);
+              if (isShowing === "none") {
+                setIsShowing("flex")}
+              else if (isShowing === "flex") {
+                setIsShowing("none")
+              }
+            }}>
+            <Text key={key}>
+              {element.body}
+            </Text>
+          </TouchableOpacity>
+          <BouncyCheckbox 
+            isChecked = {element.complete}
+            onPress={(isChecked) => {updateItemCompletion(element)}}
+            fillColor="#3a84be" 
+            size={20}
+            />
+        </View>
+      )
+
+      }
+    })
+  } else {
+    return (
+      <View style={styles.listItems}>
+        <Text>This list is empty! Add some to-do items.</Text>
+      </View>
+    )}
+  }
 
   const sendSMS = () => {
   
@@ -265,6 +350,133 @@ export default function ListDetailScreen ({ navigation, route }) {
     setSMSArray([])
     }
   }
+
+  const updateList = () => {
+    setErrortext('');
+    //setLoading(true);
+    if(!listTitle){
+      setListTitle(title)
+    }
+    if(!listDescription){
+      setListDescription(description)
+    }
+    const list = {
+      id: id,
+      title: listTitle,
+      description: listDescription,
+    }
+    //console.log('update item object: ',item)
+    listService.updateList(list.id, list)
+    .then(res => {
+      setLoading(false)
+      console.log(res.data)
+      getUserProfile();
+      getList();
+      getList();
+      getList();
+      getItems();
+    })
+  }
+
+  function editList() {
+    if(list[0]){
+    return(
+      <View>
+      <View style={styles.titleAndDescription}>
+        <TouchableOpacity
+          onPress={() => { 
+            if(showEditList == 'none') {
+              setShowEditList('flex')}
+            else if (showEditList =='flex'){
+              setShowEditList('none')
+            }
+          }}>
+          <Text style={styles.title}>{list[0]? list[0].title : null}</Text>
+          <Text style={styles.description}>{list[0]? list[0].description : null}</Text>
+        </TouchableOpacity>
+        </View>
+        <View style={{display: showEditList}}>
+        <View>
+            <SafeAreaView style={{flex: 1, padding: 20}}>
+                <ScrollView>
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    resetScrollToCoords={{ x: 0, y: 0 }}
+                    scrollEnabled={true}
+                    contentContainerStyle={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                }}>
+                    <View style={styles.home}>
+                        <Loader loading={loading} />
+                        <View style={styles.SectionStyle}>
+                            <View style={styles.InputStyle}>
+                                <TextInput
+                                style={styles.textInputStyle}
+                                onChangeText={(title) =>
+                                    setListTitle(title)
+                                }
+                                placeholder={title} //12345
+                                placeholderTextColor="#3a84be"
+                                keyboardType="default"
+                                blurOnSubmit={false}
+                                underlineColorAndroid="#f000"
+                                returnKeyType="next"
+                                onSubmitEditing={() =>
+                                    descriptionRef.current &&
+                                    descriptionRef.current.focus()
+                                }
+                                clearButtonMode="always"
+                                defaultValue={list[0].title}
+                                />
+                                <TextInput
+                                style={styles.textInputStyle}
+                                onChangeText={(description) =>
+                                    setListDescription(description)
+                                }
+                                placeholder={description} //12345
+                                placeholderTextColor="#3a84be"
+                                keyboardType="default"
+                                onSubmitEditing={Keyboard.dismiss}
+                                blurOnSubmit={false}
+                                underlineColorAndroid="#f000"
+                                returnKeyType="next"
+                                ref={descriptionRef}
+                                clearButtonMode="always"
+                                defaultValue={list[0].description}
+                                />
+                            </View>
+                            {errortext != '' ? (
+                                <Text style={styles.errorTextStyle}>
+                                {errortext}
+                                </Text>
+                            ) : null}
+                            <TouchableOpacity
+                                style={styles.buttonStyle}
+                                activeOpacity={0.5}
+                                onPress={() => {
+                                updateList(), 
+                                setShowEditList('none')
+                                }}
+                                >
+                                <Text style={styles.buttonTextStyle}>Submit changes</Text>
+                            </TouchableOpacity> 
+                            </View>         
+                    </View>
+                    </KeyboardAwareScrollView>
+                </ScrollView>
+           
+        <StatusBar style="auto" />
+    
+    </SafeAreaView>
+  </View>
+        </View>
+      </View>
+    )
+  }
+  }
+
 
   
 
@@ -297,16 +509,16 @@ export default function ListDetailScreen ({ navigation, route }) {
           <View style={styles.SectionStyle}>
             <View style={styles.listHeader}>
               <View style={styles.firstRow}>
-                <Text style={styles.title}>{list[0]? list[0].title : null}</Text>
-                <Button
+                {editList()}
+                {/* <Button
                   title="Edit list"
                   color='#1c5d8e'
                   onPress={() => { 
                       navigation.navigate('EditListDetailScreenStack', {screen: 'Edit List Detail Screen', params: list[0]})}}
-                />
+                /> */}
               </View>
               <View style={styles.secondRow}>
-                <Text style={styles.description}>{list[0]? list[0].description : null}</Text>
+                
                 <Button
                   title="Delete list"
                   color='#1c5d8e'
@@ -317,7 +529,7 @@ export default function ListDetailScreen ({ navigation, route }) {
           </View>
               <View style={styles.InputStyle}>
                 <TextInput
-                  style={styles.textInputStyle}
+                  style={styles.textInputStyle2}
                   onChangeText={(body) =>
                     setBody(body)
                   }
@@ -394,6 +606,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingTop: 20,
   },
+  titleAndDescription: {
+    justifyContent: 'flex-start',
+    position: 'relative',
+
+  },
   listItems: {
     color: '#2D608F',
     display: 'flex',
@@ -435,8 +652,10 @@ const styles = StyleSheet.create({
   secondRow: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginBottom: 10,
+    position: 'relative',
+    bottom: 60,
   },
   title: {
     fontSize: 20,
@@ -455,12 +674,23 @@ const styles = StyleSheet.create({
   InputStyle: {
     flexDirection: 'column',
     justifyContent: 'center',
-    height: 40,
+    height: 60,
     marginTop: 20,
     marginLeft: 37,
     marginRight: 10,
     margin: 10,
     width: 300,
+    color: 'black',
+  },
+  InputStyle2: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: 40,
+    marginTop: 20,
+    marginLeft: 37,
+    marginRight: 37,
+    margin: 10,
+    width: 270,
     color: 'black',
   },
   buttonStyle: {
@@ -487,11 +717,26 @@ const styles = StyleSheet.create({
     color: '#0f3c68',
     paddingLeft: 15,
     paddingRight: 15,
+    marginRight: 50,
     height: 50,
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#dadae8',
     backgroundColor: '#E7EBEF'
+  },
+  textInputStyle2: {
+    flex: 1,
+    justifyContent: 'center',
+    color: '#0f3c68',
+    paddingLeft: 15,
+    paddingRight: 15,
+    marginRight: 50,
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#dadae8',
+    backgroundColor: '#E7EBEF',
+    maxHeight: 40,
+    width: 300,
   },
   hidden: {
     display: 'none'
